@@ -1,0 +1,1419 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Fumi — ふたりへ</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@300;400;500&family=Noto+Sans+JP:wght@300;400;500&family=Cormorant+Garamond:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root {
+  --pink:#E0A8A8;--pink-light:#FBF0F0;--pink-dark:#B07070;
+  --teal:#7BBFB5;--teal-light:#EDF8F6;--teal-dark:#4A9990;
+  --purple:#9B8EC4;--purple-light:#F2EFF9;
+  --amber:#C8965A;--amber-light:#FBF3E8;
+  --gray:#8A8580;--gray-light:#F7F5F2;
+  --bg:#F8F5F1;--text:#3A3030;--text-muted:#A09890;
+  --border:rgba(58,48,48,0.08);--border-mid:rgba(58,48,48,0.14);--card:#FFFFFF;
+  --shadow:0 1px 8px rgba(58,48,48,0.05);
+  --serif:'Noto Serif JP',serif;--sans:'Noto Sans JP',sans-serif;
+  --display:'Cormorant Garamond',serif;
+  --header-grad:linear-gradient(145deg,#F6EEEA 0%,#EFE7DF 50%,#EAE2DA 100%);
+  --hero-text:#A08383;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+body{font-family:var(--sans);background:var(--bg);color:var(--text);min-height:100vh;font-size:14px;}
+.screen{display:none;min-height:100vh;}
+.screen.active{display:flex;flex-direction:column;}
+#setup{background:var(--bg);align-items:center;justify-content:center;padding:40px 24px;}
+.setup-inner{max-width:360px;width:100%;text-align:center;}
+.app-logo{font-family:var(--serif);font-size:48px;color:var(--pink-dark);letter-spacing:.1em;margin-bottom:8px;}
+.app-tagline{font-size:13px;color:var(--text-muted);margin-bottom:48px;font-weight:300;}
+.setup-card{background:var(--card);border-radius:20px;padding:28px 24px;box-shadow:var(--shadow);margin-bottom:16px;text-align:left;}
+.setup-title{font-size:15px;font-weight:500;margin-bottom:4px;}
+.setup-sub{font-size:12px;color:var(--text-muted);margin-bottom:16px;line-height:1.6;}
+.input-field{width:100%;border:1px solid var(--border);border-radius:10px;padding:12px 14px;font-size:14px;font-family:var(--sans);background:var(--gray-light);outline:none;transition:border .2s;}
+.input-field:focus{border-color:var(--pink);}
+.btn-primary{width:100%;padding:14px;border-radius:12px;background:var(--pink-dark);color:#fff;border:none;font-size:15px;font-family:var(--sans);font-weight:500;cursor:pointer;transition:opacity .2s;margin-top:8px;}
+.btn-primary:active{opacity:.8;}
+.btn-secondary{width:100%;padding:12px;border-radius:12px;background:transparent;color:var(--text-muted);border:1px solid var(--border);font-size:13px;font-family:var(--sans);cursor:pointer;margin-top:8px;}
+.header{background:var(--header-grad);padding:16px 20px 22px;border-bottom:none;box-shadow:0 2px 8px rgba(58,48,48,0.04);position:sticky;top:0;z-index:100;display:flex;align-items:flex-start;justify-content:space-between;}
+.header-logo{font-family:var(--display);font-size:26px;color:var(--hero-text);letter-spacing:.14em;font-weight:400;}
+.header-greeting{font-family:var(--serif);font-size:18px;font-weight:300;color:#5A4444;line-height:1.6;letter-spacing:.04em;margin-top:10px;}
+.header-sub{font-size:11px;color:#B0A090;margin-top:4px;letter-spacing:.04em;}
+.partner-status{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text-muted);}
+.status-dot{width:7px;height:7px;border-radius:50%;background:#ccc;}
+.status-dot.online{background:#7BBFB5;animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:rgba(248,245,241,.97);backdrop-filter:blur(12px);border-top:0.5px solid var(--border);display:flex;z-index:100;padding-bottom:env(safe-area-inset-bottom);}
+.nav-btn{flex:1;padding:10px 4px 8px;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;border:none;background:transparent;font-family:var(--sans);transition:all .2s;}
+.nav-icon{width:20px;height:20px;transition:transform .2s;}
+.nav-label{font-size:9px;color:var(--text-muted);letter-spacing:.03em;}
+.nav-btn.active .nav-label{color:var(--pink-dark);font-weight:500;}
+.nav-btn.active .nav-icon{transform:scale(1.15);}
+.content{padding:16px 16px 100px;max-width:480px;margin:0 auto;width:100%;}
+.page{display:none;}
+.page.active{display:block;}
+.section-title{font-size:10px;color:var(--text-muted);letter-spacing:.1em;margin-bottom:10px;margin-top:22px;font-weight:400;}
+.section-title:first-child{margin-top:0;}
+.card{background:var(--card);border-radius:18px;padding:16px;margin-bottom:12px;border:0.5px solid var(--border);}
+.card-title{font-size:14px;font-weight:500;margin-bottom:4px;}
+.card-sub{font-size:12px;color:var(--text-muted);line-height:1.6;}
+.chip-row{display:flex;flex-wrap:wrap;gap:7px;margin:10px 0;}
+.chip{font-size:11px;padding:5px 12px;border-radius:20px;border:0.5px solid;cursor:pointer;transition:all .15s;font-family:var(--sans);letter-spacing:.02em;}
+.chip-pink{background:var(--pink-light);color:var(--pink-dark);border-color:var(--pink);}
+.chip-pink.sel{background:var(--pink);color:#fff;border-color:var(--pink-dark);}
+.chip-teal{background:var(--teal-light);color:var(--teal-dark);border-color:var(--teal);}
+.chip-teal.sel{background:var(--teal);color:#fff;border-color:var(--teal-dark);}
+.chip-purple{background:var(--purple-light);color:var(--purple);border-color:var(--purple);}
+.chip-purple.sel{background:var(--purple);color:#fff;}
+.chip-amber{background:var(--amber-light);color:var(--amber);border-color:var(--amber);}
+.chip-amber.sel{background:var(--amber);color:#fff;}
+.chip-gray{background:var(--gray-light);color:var(--gray);border-color:#ddd;}
+.chip-gray.sel{background:var(--gray);color:#fff;}
+textarea{width:100%;border:1px solid var(--border);border-radius:10px;padding:12px;font-size:13px;font-family:var(--sans);background:var(--gray-light);resize:none;outline:none;min-height:60px;transition:border .2s;}
+textarea:focus{border-color:var(--pink);}
+.btn{width:100%;padding:12px;border-radius:12px;font-size:14px;font-family:var(--sans);font-weight:500;cursor:pointer;border:none;transition:opacity .2s;margin-top:8px;}
+.btn:active{opacity:.75;}
+.btn-pink{background:var(--pink-dark);color:#fff;letter-spacing:.04em;}
+.btn-teal{background:var(--teal-dark);color:#fff;letter-spacing:.04em;}
+.btn-outline{background:transparent;border:1px solid var(--border);color:var(--text-muted);font-size:13px;}
+.btn-purple{background:var(--purple);color:#fff;}
+.btn-amber{background:var(--amber);color:#fff;}
+.greeting{font-family:var(--display);font-size:24px;font-weight:400;color:var(--text);margin-bottom:4px;line-height:1.5;letter-spacing:.03em;}
+.greeting-sub{font-size:11px;color:var(--text-muted);margin-bottom:20px;letter-spacing:.04em;}
+.inbox-item{background:var(--card);border-radius:16px;padding:13px 15px;margin-bottom:8px;border:0.5px solid var(--border);display:flex;gap:12px;align-items:flex-start;cursor:pointer;transition:all .2s;}
+.inbox-item.unread{border-left:2px solid var(--pink-dark);background:#FDFAF9;}
+.inbox-icon-wrap{width:32px;height:32px;border-radius:11px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.iw-rose{background:#FBEDF0;} .iw-sage{background:#EAF4F0;} .iw-sky{background:#EAF0F8;} .iw-amber{background:#FBF3E8;} .iw-purple{background:#F2EFF9;}
+.inbox-icon{font-size:22px;flex-shrink:0;margin-top:1px;}
+.inbox-content{flex:1;}
+.inbox-title{font-size:13px;font-weight:500;margin-bottom:3px;}
+.inbox-text{font-size:12px;color:var(--text-muted);line-height:1.5;}
+.inbox-time{font-size:11px;color:var(--text-muted);flex-shrink:0;}
+.sos-strip{background:linear-gradient(145deg,#FBEDF0,#F5E4EE);border-radius:16px;padding:14px 16px;display:flex;align-items:center;gap:12px;cursor:pointer;border:1px solid #E8C8D0;margin-bottom:12px;transition:opacity .2s;}
+.sos-strip:active{opacity:.8;}
+.sos-ic{width:40px;height:40px;border-radius:13px;background:rgba(255,255,255,.6);display:flex;align-items:center;justify-content:center;flex-shrink:0;border:1px solid #E0C0C8;}
+.sos-strip-t{font-size:13px;font-weight:500;color:#A07080;letter-spacing:.03em;}
+.sos-strip-s{font-size:10px;color:#C0A0A8;margin-top:2px;}
+.timeline-item{display:flex;gap:12px;margin-bottom:16px;}
+.tl-dot-wrap{display:flex;flex-direction:column;align-items:center;flex-shrink:0;}
+.tl-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;margin-top:4px;}
+.tl-line{width:1px;background:var(--border);flex:1;margin-top:4px;}
+.tl-content{flex:1;padding-bottom:8px;}
+.tl-date{font-size:11px;color:var(--text-muted);margin-bottom:4px;}
+.tl-text{font-size:13px;line-height:1.6;}
+.tl-chips{display:flex;flex-wrap:wrap;gap:4px;margin-top:6px;}
+.tl-chip{font-size:10px;padding:2px 8px;border-radius:10px;background:var(--gray-light);color:var(--gray);}
+.med-item{background:var(--card);border-radius:12px;padding:14px;margin-bottom:8px;box-shadow:var(--shadow);display:flex;align-items:center;gap:12px;}
+.med-check{width:24px;height:24px;border-radius:7px;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;font-size:13px;transition:all .2s;}
+.med-check.checked{background:var(--teal);border-color:var(--teal-dark);color:#fff;}
+.med-info{flex:1;}
+.med-name{font-size:13px;font-weight:500;}
+.med-time{font-size:11px;color:var(--text-muted);margin-top:2px;}
+.med-tag{font-size:10px;padding:2px 8px;border-radius:8px;flex-shrink:0;}
+.tag-pink{background:var(--pink-light);color:var(--pink-dark);}
+.tag-teal{background:var(--teal-light);color:var(--teal-dark);}
+.tag-amber{background:var(--amber-light);color:var(--amber);}
+.toast{position:fixed;top:20px;left:50%;transform:translateX(-50%) translateY(-80px);background:var(--text);color:#fff;padding:10px 20px;border-radius:20px;font-size:13px;z-index:999;transition:transform .3s;white-space:nowrap;}
+.toast.show{transform:translateX(-50%) translateY(0);}
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:200;display:none;align-items:flex-end;}
+.modal-bg.open{display:flex;}
+.modal{background:var(--bg);border-radius:24px 24px 0 0;padding:24px 20px 40px;width:100%;max-height:85vh;overflow-y:auto;}
+.modal-title{font-size:16px;font-weight:500;margin-bottom:4px;}
+.modal-sub{font-size:12px;color:var(--text-muted);margin-bottom:16px;line-height:1.6;}
+.close-btn{float:right;background:var(--gray-light);border:none;border-radius:50%;width:28px;height:28px;font-size:16px;cursor:pointer;color:var(--gray);}
+.warm-item{background:var(--card);border-radius:12px;padding:12px 14px;margin-bottom:8px;box-shadow:var(--shadow);display:flex;gap:10px;align-items:flex-start;}
+.warm-from{font-size:10px;padding:2px 7px;border-radius:6px;font-weight:500;flex-shrink:0;margin-top:2px;}
+.warm-me{background:var(--pink-light);color:var(--pink-dark);}
+.warm-partner{background:var(--purple-light);color:var(--purple);}
+.warm-text{font-size:12px;color:var(--text);line-height:1.6;flex:1;}
+.warm-date{font-size:10px;color:var(--text-muted);flex-shrink:0;}
+.loader{text-align:center;padding:40px;color:var(--text-muted);font-size:13px;}
+.hint-item{display:flex;gap:10px;align-items:flex-start;padding:10px 0;border-bottom:1px solid var(--border);}
+.hint-item:last-child{border-bottom:none;}
+.hint-badge{font-size:11px;padding:2px 8px;border-radius:6px;flex-shrink:0;font-weight:500;margin-top:1px;}
+.badge-ok{background:#E6F4F2;color:var(--teal-dark);}
+.badge-no{background:var(--pink-light);color:var(--pink-dark);}
+.hint-text{font-size:12px;color:var(--text);line-height:1.6;}
+.learn-card{background:var(--card);border-radius:16px;padding:14px;margin-bottom:8px;border:0.5px solid var(--border);cursor:pointer;}
+.learn-header{display:flex;align-items:center;gap:10px;}
+.learn-tag{font-size:9px;padding:3px 8px;border-radius:6px;font-weight:500;white-space:nowrap;}
+.tag-amber-sm{background:var(--amber-light);color:#9A6830;border:1px solid #E0C8A8;}
+.tag-teal-sm{background:#EAF4F0;color:#5A8878;border:1px solid #C0D8D0;}
+.tag-purple-sm{background:var(--purple-light);color:var(--purple);border:1px solid #D0C0E8;}
+.learn-title{font-size:12px;font-weight:500;flex:1;line-height:1.5;color:#4A3A38;}
+.learn-arrow{font-size:12px;color:var(--text-muted);transition:transform .25s;flex-shrink:0;}
+.learn-arrow.open{transform:rotate(90deg);}
+.learn-body{font-size:11px;color:var(--text-muted);line-height:1.9;margin:10px 0 0;border-top:0.5px solid var(--border);padding-top:10px;display:none;}
+.learn-body.open{display:block;}
+.learn-example{background:linear-gradient(145deg,#FBF8F5,#F5F8FB);border-left:2px solid #C8A8A8;border-radius:0 8px 8px 0;padding:10px 12px;margin-top:10px;font-size:11px;line-height:1.9;color:#5A4A48;}
+.stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px;}
+.stat-card{background:var(--card);border-radius:14px;padding:14px;text-align:center;box-shadow:var(--shadow);}
+.stat-num{font-family:var(--serif);font-size:28px;color:var(--pink-dark);}
+.stat-label{font-size:11px;color:var(--text-muted);margin-top:2px;}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;margin-bottom:12px;}
+.cal-dow{font-size:10px;color:var(--text-muted);text-align:center;padding:4px 0;}
+.cal-day{font-size:11px;text-align:center;padding:6px 2px;border-radius:6px;cursor:pointer;position:relative;}
+.cal-day.today{background:var(--pink-light);color:var(--pink-dark);font-weight:500;}
+.cal-dot{display:flex;justify-content:center;gap:2px;margin-top:2px;}
+.dot{width:4px;height:4px;border-radius:50%;}
+.dot-teal{background:var(--teal);}
+.dot-pink{background:var(--pink-dark);}
+.dot-amber{background:var(--amber);}
+.money-item{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border);}
+.money-item:last-child{border-bottom:none;}
+.money-label{font-size:13px;}
+.money-amount{font-size:14px;font-weight:500;}
+.money-amount.minus{color:var(--pink-dark);}
+.money-amount.plus{color:var(--teal-dark);}
+.gauge-wrap{margin-bottom:14px;}
+.gauge-bar{height:8px;background:var(--gray-light);border-radius:4px;overflow:hidden;margin:6px 0;}
+.gauge-fill{height:100%;border-radius:4px;transition:width .3s;}
+.fill-pink{background:var(--pink-dark);}
+.fill-teal{background:var(--teal-dark);}
+.gauge-steps{display:flex;gap:6px;}
+.gauge-step{flex:1;padding:6px 4px;border-radius:8px;border:1px solid var(--border);background:var(--card);font-size:10px;text-align:center;cursor:pointer;color:var(--text-muted);}
+.gauge-step.active-pink{border-color:var(--pink-dark);background:var(--pink-light);color:var(--pink-dark);font-weight:500;}
+.gauge-step.active-teal{border-color:var(--teal-dark);background:var(--teal-light);color:var(--teal-dark);font-weight:500;}
+.privacy-row{display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--border);}
+.privacy-row:last-child{border-bottom:none;}
+.privacy-info{flex:1;}
+.privacy-name{font-size:13px;font-weight:500;margin-bottom:2px;}
+.privacy-desc{font-size:11px;color:var(--text-muted);}
+.toggle-wrap{position:relative;width:40px;height:22px;flex-shrink:0;margin-left:12px;}
+.toggle-input{opacity:0;width:100%;height:100%;position:absolute;cursor:pointer;margin:0;z-index:1;}
+.toggle-track{position:absolute;inset:0;background:var(--border);border-radius:11px;transition:background .2s;}
+.toggle-input:checked+.toggle-track{background:var(--teal-dark);}
+.toggle-thumb{position:absolute;top:3px;left:3px;width:16px;height:16px;background:#fff;border-radius:50%;transition:transform .2s;pointer-events:none;}
+.toggle-input:checked~.toggle-thumb{transform:translateX(18px);}
+.sos-safe-card{border-radius:14px;background:var(--pink-light);border:1px solid var(--pink);padding:16px;margin-bottom:12px;}
+.sos-safe-title{font-size:13px;font-weight:500;color:var(--pink-dark);margin-bottom:8px;}
+.sos-safe-link{display:block;padding:10px;border-radius:10px;background:#fff;border:1px solid var(--pink);font-size:13px;color:var(--pink-dark);text-align:center;margin-bottom:6px;text-decoration:none;}
+.partner-msg{background:linear-gradient(135deg,var(--teal-light),var(--purple-light));border-radius:16px;padding:18px;margin-bottom:12px;}
+.partner-msg-label{font-size:11px;color:var(--teal-dark);margin-bottom:8px;}
+.partner-msg-text{font-size:14px;color:var(--text);line-height:1.7;font-weight:300;}
+.reply-btn{padding:10px 16px;border-radius:20px;border:1px solid var(--teal);background:var(--teal-light);color:var(--teal-dark);font-size:12px;font-family:var(--sans);cursor:pointer;margin:4px;}
+.reply-btn.sel{background:var(--teal);color:#fff;}
+.iMessage-preview{background:var(--teal-light);border-radius:12px;padding:12px;margin-top:8px;font-size:12px;color:var(--teal-dark);line-height:1.6;}
+.meeting-item{display:flex;gap:10px;align-items:center;padding:10px 0;border-bottom:1px solid var(--border);}
+.meeting-item:last-child{border-bottom:none;}
+.meeting-num{width:24px;height:24px;border-radius:50%;background:var(--purple-light);color:var(--purple);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:500;flex-shrink:0;}
+.meeting-text{font-size:13px;flex:1;}
+.good-question{background:linear-gradient(145deg,#EDF5F1,#F5EDF3);border-radius:14px;padding:16px;text-align:center;margin-bottom:12px;}
+.good-q-text{font-family:var(--serif);font-size:16px;color:#5A8878;margin-bottom:3px;letter-spacing:.04em;font-weight:300;line-height:1.6;}
+.good-q-sub{font-size:10px;color:#90B0A8;letter-spacing:.04em;}
+.pair-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px;}
+.pair-item{background:var(--card);border-radius:12px;padding:12px;box-shadow:var(--shadow);}
+.pair-who{font-size:10px;font-weight:500;margin-bottom:6px;}
+.pair-text{font-size:12px;color:var(--text);line-height:1.5;}
+
+.diary-day{background:var(--card);border-radius:18px;border:0.5px solid var(--border);padding:0;margin-bottom:12px;overflow:hidden;}
+.diary-day-header{padding:11px 15px;border-bottom:0.5px solid var(--border);display:flex;align-items:center;justify-content:space-between;background:linear-gradient(145deg,#FBF8F5,#F5F8FB);}
+.diary-day-date{font-size:12px;font-weight:300;color:var(--text);font-family:var(--serif);letter-spacing:.04em;}
+.diary-day-badge{font-size:9px;padding:3px 9px;border-radius:10px;letter-spacing:.02em;}
+.badge-visit{background:#EAF4F0;color:#5A8878;border:1px solid #C0D8D0;}
+.badge-hard{background:#FBEDF0;color:#B07088;border:1px solid #E0C0CC;}
+.badge-good{background:#EEF5EA;color:#6A8858;border:1px solid #C0D8B8;}
+.diary-row{display:flex;gap:10px;align-items:flex-start;padding:9px 15px;border-bottom:0.5px solid #F8F4F2;}
+.diary-row:last-child{border-bottom:none;}
+.diary-row-icon{width:18px;height:18px;flex-shrink:0;margin-top:1px;}
+.diary-row-content{flex:1;}
+.diary-chips{display:flex;flex-wrap:wrap;gap:4px;}
+.diary-chip{font-size:10px;padding:2px 8px;border-radius:8px;display:inline-block;}
+.dc-teal{background:#EAF4F0;color:#5A8878;}
+.dc-pink{background:#FBEDF0;color:#B07088;}
+.dc-gray{background:var(--gray-light);color:var(--gray);}
+.dc-amber{background:var(--amber-light);color:var(--amber);}
+.dc-green{background:#EEF5EA;color:#6A8858;}
+.diary-text{font-size:12px;color:#5A8878;line-height:1.7;}
+.diary-memo{font-size:12px;color:var(--text-muted);line-height:1.6;margin-top:2px;}
+</style>
+</head>
+<body>
+
+<div id="setup" class="screen active">
+  <div class="setup-inner">
+    <div class="app-logo">Fumi</div>
+    <div class="app-tagline">ふたりへ、届ける</div>
+    <div class="setup-card">
+      <div class="setup-title">あなたの名前</div>
+      <div class="setup-sub">アプリで表示される名前</div>
+      <input class="input-field" id="my-name" type="text" placeholder="例：みさき" maxlength="20">
+    </div>
+    <div class="setup-card">
+      <div class="setup-title">パートナーの名前</div>
+      <div class="setup-sub">一緒に使う人の名前</div>
+      <input class="input-field" id="partner-name" type="text" placeholder="例：ゆうじ" maxlength="20">
+    </div>
+    <div class="setup-card">
+      <div class="setup-title">合言葉</div>
+      <div class="setup-sub">ふたりで同じ合言葉を設定してください</div>
+      <input class="input-field" id="couple-code" type="text" placeholder="例：futari2024" maxlength="30">
+    </div>
+    <button class="btn-primary" onclick="startApp()">はじめる</button>
+  </div>
+</div>
+
+<div id="main" class="screen">
+  <div class="header">
+    <div>
+      <div class="header-logo">Fumi</div>
+      <div class="header-greeting" id="greeting"></div>
+      <div class="header-sub">今日もふたりで、ひとつずつ</div>
+    </div>
+    <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;margin-top:4px">
+      <div style="font-size:11px;color:var(--hero-text);font-weight:400;letter-spacing:.04em" id="header-user"></div>
+      <div class="partner-status">
+        <div class="status-dot" id="status-dot"></div>
+        <span id="status-text" style="font-size:10px;color:#8AB4A8"></span>
+      </div>
+      <button onclick="openPrivacy()" style="margin-top:4px;background:rgba(255,255,255,.5);border:1px solid rgba(160,130,130,.2);border-radius:8px;padding:4px 8px;display:flex;align-items:center;gap:4px;cursor:pointer;">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#A08383" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93l-1.41 1.41M6.34 17.66l-1.41 1.41M20 12h-2M6 12H4M17.66 17.66l-1.41-1.41M7.76 7.76L6.34 6.34"/></svg>
+        <span style="font-size:9px;color:#A08383;letter-spacing:.04em">設定</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <!-- HOME -->
+    <div id="page-home" class="page active">
+      <div class="section-title">受け取ったメッセージ</div>
+      <div id="inbox-list"><div class="loader">読み込み中...</div></div>
+      <div class="section-title">今日のよかった探し</div>
+      <div class="card">
+        <div class="good-question">
+          <div class="good-q-text">今日、ひとつだけよかったことは？</div>
+          <div class="good-q-sub">どんな小さなことでも大丈夫</div>
+        </div>
+        <div class="chip-row" id="good-chips">
+          <span class="chip chip-teal" onclick="toggleChip(this)">少し笑えた</span>
+          <span class="chip chip-teal" onclick="toggleChip(this)">おいしいものを食べた</span>
+          <span class="chip chip-teal" onclick="toggleChip(this)">よく眠れた</span>
+          <span class="chip chip-teal" onclick="toggleChip(this)">好きな音楽を聴いた</span>
+          <span class="chip chip-teal" onclick="toggleChip(this)">ゆっくりできた</span>
+          <span class="chip chip-teal" onclick="toggleChip(this)">パートナーと話せた</span>
+        </div>
+        <textarea id="good-memo" placeholder="ひと言でいい。「コーヒーがおいしかった」でも十分。" rows="2"></textarea>
+        <button class="btn btn-teal" onclick="sendGood()">パートナーと共有する</button>
+      </div>
+      <div id="good-history"></div>
+      <div class="sos-strip" onclick="sendSOS()">
+        <div class="sos-ic">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#9A7888" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 11.5 19.79 19.79 0 01.22 2.82 2 2 0 012.22.82h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 8.83a16 16 0 006.08 6.08l1.58-1.58a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+        </div>
+        <div style="flex:1"><div class="sos-strip-t">SOS を送る</div><div class="sos-strip-s">タップだけで今すぐ届く</div></div>
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#C8B8B8" stroke-width="1.5" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+      </div>
+    </div>
+
+    <!-- KIMOCHI -->
+    <div id="page-kimochi" class="page">
+      <div class="section-title">今日の嬉しいこと・感謝</div>
+      <div class="card">
+        <div class="card-sub" style="margin-bottom:10px">パートナーへの嬉しかったことを届け合う</div>
+        <div class="chip-row">
+          <span class="chip chip-teal" onclick="toggleChip(this)">そばにいてくれた</span>
+          <span class="chip chip-teal" onclick="toggleChip(this)">話を聞いてくれた</span>
+          <span class="chip chip-teal" onclick="toggleChip(this)">ご飯を買ってきてくれた</span>
+          <span class="chip chip-teal" onclick="toggleChip(this)">家事をやってくれた</span>
+          <span class="chip chip-teal" onclick="toggleChip(this)">「お疲れさま」と言ってくれた</span>
+          <span class="chip chip-teal" onclick="toggleChip(this)">少し笑えた</span>
+        </div>
+        <textarea id="happy-memo" placeholder="「あの一言が嬉しかった」「これをしてくれてありがとう」" rows="2"></textarea>
+        <button class="btn btn-teal" onclick="sendHappy()">届ける</button>
+      </div>
+
+      <div class="section-title">身体・気持ちのこと</div>
+      <div class="card">
+        <div class="chip-row">
+          <span class="chip chip-pink" onclick="toggleChip(this)">身体がしんどい</span>
+          <span class="chip chip-pink" onclick="toggleChip(this)">テープが痒い</span>
+          <span class="chip chip-pink" onclick="toggleChip(this)">頭痛がひどい</span>
+          <span class="chip chip-pink" onclick="toggleChip(this)">処置がつらかった</span>
+          <span class="chip chip-pink" onclick="toggleChip(this)">涙が出た</span>
+          <span class="chip chip-pink" onclick="toggleChip(this)">自分を責めてしまった</span>
+          <span class="chip chip-pink" onclick="toggleChip(this)">誰かの妊娠がつらかった</span>
+          <span class="chip chip-pink" onclick="toggleChip(this)">喪失感がある</span>
+          <span class="chip chip-pink" onclick="toggleChip(this)">消えてしまいたかった</span>
+        </div>
+      </div>
+
+      <div class="section-title">心が揺れたこと</div>
+      <div class="card">
+        <div class="card-sub" style="margin-bottom:10px">SNSや妊娠報告でつらかった。おかしくない。</div>
+        <div class="chip-row">
+          <span class="chip chip-purple" onclick="toggleChip(this)">友人の妊娠報告がつらかった</span>
+          <span class="chip chip-purple" onclick="toggleChip(this)">SNSを見てしんどくなった</span>
+          <span class="chip chip-purple" onclick="toggleChip(this)">子どもを見てつらかった</span>
+          <span class="chip chip-purple" onclick="toggleChip(this)">大丈夫って言ったけど本当は違う</span>
+          <span class="chip chip-purple" onclick="toggleChip(this)">笑ってたけどしんどかった</span>
+        </div>
+      </div>
+
+      <div class="section-title">今日の自分へ</div>
+      <div class="card">
+        <div class="card-sub" style="margin-bottom:10px">自分をいたわる小さな記録</div>
+        <div class="chip-row">
+          <span class="chip chip-gray" onclick="toggleChip(this)">お風呂でゆっくりした</span>
+          <span class="chip chip-gray" onclick="toggleChip(this)">好きなものを食べた</span>
+          <span class="chip chip-gray" onclick="toggleChip(this)">散歩した</span>
+          <span class="chip chip-gray" onclick="toggleChip(this)">早く寝た</span>
+          <span class="chip chip-gray" onclick="toggleChip(this)">音楽を聴いた</span>
+        </div>
+      </div>
+
+      <div class="section-title">今の状態</div>
+      <div class="card">
+        <div class="chip-row">
+          <span class="chip chip-gray" onclick="toggleChip(this)">ひとりにしてほしい</span>
+          <span class="chip chip-gray" onclick="toggleChip(this)">そばにいてほしい</span>
+          <span class="chip chip-gray" onclick="toggleChip(this)">話したい</span>
+          <span class="chip chip-teal" onclick="toggleChip(this)">少し落ち着いてる</span>
+          <span class="chip chip-teal" onclick="toggleChip(this)">今日は大丈夫</span>
+        </div>
+      </div>
+
+      <div id="sos-safe" style="display:none">
+        <div class="sos-safe-card">
+          <div class="sos-safe-title">今すぐ話せる場所</div>
+          <a class="sos-safe-link" href="tel:0120-279-338">よりそいホットライン 0120-279-338（24時間）</a>
+          <a class="sos-safe-link" href="tel:0570-783-556">いのちの電話 0570-783-556</a>
+        </div>
+      </div>
+
+      <div class="section-title">パートナーへの過去の言葉</div>
+      <div id="past-words" style="font-size:12px;color:var(--text-muted);padding:8px 0;line-height:1.8"></div>
+
+      <textarea id="kimochi-memo" placeholder="言葉にならなくていい。断片でも大丈夫。" rows="3"></textarea>
+      <button class="btn btn-pink" onclick="sendKimochi()">パートナーにそっと届ける</button>
+      <button class="btn btn-outline" onclick="saveKimochiPrivate()">自分だけの記録にする</button>
+    </div>
+
+    <!-- PARTNER -->
+    <div id="page-partner" class="page">
+      <div class="section-title">パートナーから届いている</div>
+      <div id="partner-messages"><div class="loader">読み込み中...</div></div>
+
+      <div class="section-title">選ぶだけで返事する</div>
+      <div class="card">
+        <div class="card-sub" style="margin-bottom:10px">文章は要らない。選んで届けるだけ。</div>
+        <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px" id="reply-btns">
+          <button class="reply-btn" onclick="selectReply(this,'読んだよ、そばにいる')">読んだよ、そばにいる</button>
+          <button class="reply-btn" onclick="selectReply(this,'今日もよく頑張ったね')">今日もよく頑張ったね</button>
+          <button class="reply-btn" onclick="selectReply(this,'話したいときは聞くよ')">話したいときは聞くよ</button>
+          <button class="reply-btn" onclick="selectReply(this,'ゆっくり休んでね')">ゆっくり休んでね</button>
+          <button class="reply-btn" onclick="selectReply(this,'ありがとう')">ありがとう</button>
+          <button class="reply-btn" onclick="selectReply(this,'ちゃんと考えてるよ')">ちゃんと考えてるよ</button>
+          <button class="reply-btn" onclick="selectReply(this,'一緒にいるよ')">一緒にいるよ</button>
+          <button class="reply-btn" onclick="selectReply(this,'うまく言えないけど、大切にしてる')">うまく言えないけど、大切にしてる</button>
+        </div>
+        <div class="iMessage-preview" id="reply-preview" style="display:none"></div>
+        <button class="btn btn-teal" id="reply-send-btn" style="display:none" onclick="sendReply()">届ける</button>
+      </div>
+
+      <div class="section-title">失言リカバリー</div>
+      <div class="card">
+        <div class="card-title">さっき言い方が悪かったかも</div>
+        <div class="card-sub" style="margin-bottom:10px">どんな状況でしたか？</div>
+        <div class="chip-row" id="recover-chips">
+          <span class="chip chip-amber" onclick="toggleChip(this)">励ましたつもりが傷つけた</span>
+          <span class="chip chip-amber" onclick="toggleChip(this)">アドバイスして怒らせた</span>
+          <span class="chip chip-amber" onclick="toggleChip(this)">ごめんねで余計こじれた</span>
+          <span class="chip chip-amber" onclick="toggleChip(this)">黙っていたら怒らせた</span>
+        </div>
+        <div id="recover-hint" style="background:var(--amber-light);border-radius:10px;padding:12px;margin:8px 0;font-size:12px;color:#633806;line-height:1.7;display:none"></div>
+        <textarea id="recover-word" placeholder="今夜かける言葉（そのまま使っていい）" rows="2" style="display:none"></textarea>
+        <button class="btn btn-amber" id="recover-btn" style="display:none" onclick="sendRecover()">パートナーに届ける</button>
+      </div>
+
+      <div class="section-title">ふたり会議の準備</div>
+      <div class="card">
+        <div class="card-sub" style="margin-bottom:10px">話し合いの前にテーマとルールを決める</div>
+        <div class="chip-row">
+          <span class="chip chip-purple" onclick="toggleChip(this)">治療の続け方について</span>
+          <span class="chip chip-purple" onclick="toggleChip(this)">お金のこと</span>
+          <span class="chip chip-purple" onclick="toggleChip(this)">仕事と治療の両立</span>
+          <span class="chip chip-purple" onclick="toggleChip(this)">ふたりの関係について</span>
+          <span class="chip chip-purple" onclick="toggleChip(this)">治療の休憩について</span>
+        </div>
+        <div class="meeting-item"><div class="meeting-num">約</div><div class="meeting-text">責めない。途中でやめてもいい。</div></div>
+        <div class="meeting-item"><div class="meeting-num">約</div><div class="meeting-text">「あなたは〇〇だ」ではなく「私は〇〇と感じる」で話す。</div></div>
+        <div class="meeting-item"><div class="meeting-num">約</div><div class="meeting-text">答えを出さなくていい。聞き合うだけでいい。</div></div>
+        <button class="btn btn-purple" onclick="sendMeeting()">「今日、話せそう？」と送る</button>
+      </div>
+
+      <div class="section-title">Iメッセージ変換</div>
+      <div class="card">
+        <div class="card-sub" style="margin-bottom:10px">「あなたは〇〇」を「私は〇〇と感じる」に変換して届ける</div>
+        <textarea id="i-input" placeholder="例：最近全然話を聞いてくれない" rows="2"></textarea>
+        <button class="btn btn-outline" onclick="convertIMessage()" style="margin-bottom:8px">変換する</button>
+        <div id="i-output" style="display:none;background:var(--purple-light);border-radius:10px;padding:12px;font-size:13px;color:var(--purple);line-height:1.7;margin-bottom:8px"></div>
+        <button class="btn btn-purple" id="i-send-btn" style="display:none" onclick="sendIMessage()">この言葉で届ける</button>
+      </div>
+
+      <div class="section-title">薬について知る</div>
+      <div class="learn-card" onclick="toggleLearn(this)">
+        <div class="learn-header"><span class="learn-tag tag-amber-sm">エストラーナテープ（貼り薬）</span><span class="learn-title">子宮内膜を厚くするための女性ホルモン補充</span><span class="learn-arrow">›</span></div>
+        <div class="learn-body">移植前に子宮を妊娠しやすい状態に整えるために使います。よくある副作用：貼った部分のかゆみ・かぶれ、胸の張り、むくみ、気分の波。かゆみが強い場合は貼る場所を毎回変えると和らぐことがあります。<div class="learn-example">このテープを貼っている期間、体のだるさや気分の変動が出やすくなっています。本人も止められない感情の波なので、「どうしたの？」より「しんどいね」と一言共感するだけで十分届きます。</div></div>
+      </div>
+      <div class="learn-card" onclick="toggleLearn(this)">
+        <div class="learn-header"><span class="learn-tag tag-teal-sm">デュファストン（飲み薬・1日3回）</span><span class="learn-title">着床を助ける黄体ホルモン補充剤</span><span class="learn-arrow">›</span></div>
+        <div class="learn-body">受精卵が着床しやすいよう子宮内膜を整え、妊娠を維持するために使います。よくある副作用：頭痛、眠気、吐き気、気分の落ち込み。特に頭痛が出やすい薬です。<div class="learn-example">頭痛がひどい日はそっと休ませてあげて、家事を引き受けてもらえると助かります。気分が落ち込んでいるときは、ただそばにいてくれるだけで救われることがあります。</div></div>
+      </div>
+      <div class="learn-card" onclick="toggleLearn(this)">
+        <div class="learn-header"><span class="learn-tag tag-purple-sm">ワンクリノン（膣錠ジェル）</span><span class="learn-title">毎日ひとりでトイレで行う処置</span><span class="learn-arrow">›</span></div>
+        <div class="learn-body">デュファストンと同じ目的ですが、直接子宮に届くため効果が出やすいとされています。よくある副作用：使用後のおりもの状のものが出る、違和感、下腹部の重さ。<div class="learn-example">これはトイレでひとりで処置するもので、毎日続けることの孤独感や惨めさを感じている人もいます。「頑張ってるね」の一言が、思った以上に届く瞬間があります。</div></div>
+      </div>
+
+      <div class="section-title">接し方ヒント</div>
+      <div class="learn-card" onclick="toggleLearn(this)">
+        <div class="learn-header"><span class="learn-tag tag-amber-sm">地雷</span><span class="learn-title">「大丈夫、次があるよ」がなぜ刺さるのか</span><span class="learn-arrow">›</span></div>
+        <div class="learn-body">今この瞬間に悲しんでいる人には「もう次に進め」と聞こえる。解決策ではなく「今しんどい」という共感がほしいだけ。<div class="learn-example">代わりに：「今日はしんどかったね。それだけつらかったんだね。」——それだけでいい。</div></div>
+      </div>
+      <div class="learn-card" onclick="toggleLearn(this)">
+        <div class="learn-header"><span class="learn-tag tag-amber-sm">地雷</span><span class="learn-title">アドバイスが「他人事」に聞こえる理由</span><span class="learn-arrow">›</span></div>
+        <div class="learn-body">アドバイスをしたくなるのは、あなたが真剣にパートナーのことを考えているから。それはちゃんと伝わっている。ただ、今は解決策より「聞いてもらえた」という感覚が必要な状態にある。口を挟まず最後まで聞ける人が、今一番の支えになれる。<div class="learn-example">「そうか」「つらかったね」「もう少し聞かせて」——この三つだけ覚えておけば十分。答えを出さなくていい。</div></div>
+      </div>
+      <div class="learn-card" onclick="toggleLearn(this)">
+        <div class="learn-header"><span class="learn-tag tag-teal-sm">知識</span><span class="learn-title">ホルモン剤で感情が変わるとはどういうことか</span><span class="learn-arrow">›</span></div>
+        <div class="learn-body">急に泣いたり感情が揺れるのは、あなたへの不満ではない。ホルモン剤が脳の感情調節に直接作用していて、本人も止められない。あなたのせいでも、パートナーのせいでもない。ただそこにある、薬の作用。それを知っているだけで、あなたの接し方は変わる。<div class="learn-example">「なんで泣いてるの？」より「そうか、しんどいね」。理由を聞かなくていい。ただそばにいるだけでいい。</div></div>
+      </div>
+      <div class="learn-card" onclick="toggleLearn(this)">
+        <div class="learn-header"><span class="learn-tag tag-teal-sm">知識</span><span class="learn-title">陰性の判定は「喪失体験」</span><span class="learn-arrow">›</span></div>
+        <div class="learn-body">陰性の判定が出た日、パートナーは「また消えた」という喪失感の中にいる。励ましの言葉は今夜はいらない。次があるよ、も、大丈夫も、今夜は必要ない。あなたがそこにいるだけで、ひとりじゃないと伝わる。それで十分な夜がある。<div class="learn-example">何も言わず隣に座る。「今日はそばにいるよ」とだけ言う。それだけが、今夜の正解。</div></div>
+      </div>
+      <div class="learn-card" onclick="toggleLearn(this)">
+        <div class="learn-header"><span class="learn-tag tag-purple-sm">関係</span><span class="learn-title">「ごめんね」より「ここにいるよ」</span><span class="learn-arrow">›</span></div>
+        <div class="learn-body">「ごめんね」と言いたくなる気持ちはわかる。でもその言葉が届いた瞬間、パートナーは「もうこれ以上言えない」と感じることがある。謝罪は会話を終わらせてしまう。代わりに、扉を開く言葉を使ってほしい。<div class="learn-example">「今日のこと、もう少し聞かせて」「ここにいるよ」——これが会話を開く言葉。ごめんねより、聞かせてが届く。</div></div>
+      </div>
+      <div class="learn-card" onclick="toggleLearn(this)">
+        <div class="learn-header"><span class="learn-tag tag-purple-sm">関係</span><span class="learn-title">言葉より、そばにいること</span><span class="learn-arrow">›</span></div>
+        <div class="learn-body">何を言えばいいかわからなくていい。正しい言葉を探さなくていい。落ち込んでいるとき、言葉よりも体温が届くことがある。「頑張りすぎだよ」「考えすぎだよ」は、どんなに優しい気持ちで言っても、今夜は必要ない。<div class="learn-example">黙って隣に座る。そっと抱きしめる。それだけで、ひとりじゃないと伝わる夜がある。</div></div>
+      </div>
+      <div class="learn-card" onclick="toggleLearn(this)">
+        <div class="learn-header"><span class="learn-tag tag-teal-sm">知識</span><span class="learn-title">「治療しなきゃいけない自分はダメだ」という気持ちのこと</span><span class="learn-arrow">›</span></div>
+        <div class="learn-body">不妊治療をしている人の多くが、「自然にできないのは自分に何か問題があるから」と感じている。これは心の自然な反応だけど、同時にとても深い傷になる。タイミング法から人工授精へ、体外受精へと進むたびに、周りの人が何の苦労もなく手にしていることが自分にはできないという惨めさや劣等感が積み重なっていく。あなたのパートナーも、言葉にしていないだけで、そこを一人で抱えているかもしれない。<div class="learn-example">「頑張ってるね」という言葉より、「一緒に考えたい」「あなたのせいじゃない」という言葉が届く瞬間がある。</div></div>
+      </div>
+      <div class="learn-card" onclick="toggleLearn(this)">
+        <div class="learn-header"><span class="learn-tag tag-teal-sm">知識</span><span class="learn-title">終わりが見えない苦しさと、ふたりの気持ちのずれについて</span><span class="learn-arrow">›</span></div>
+        <div class="learn-body">不妊治療には「これをすれば必ず妊娠できる」という保証がない。毎周期、次の選択を迫られながら、結果が出なくても続けなければならない。努力が報われない経験がこれほど続くことは、本当に心が消耗する。パートナーが検索をやめられなかったり、情報を集め続けているのは、不安を少しでもコントロールしたいからかもしれない。生理が来るたびに、妊娠していなかった現実を突きつけられる。一方で、男性はまだ時間があると感じやすい。仕事のタイミング、経済的な不安、治療への怖さ——見えている景色が違うから、気持ちがずれるのは自然なことだ。<div class="learn-example">どちらが正しいかを決めようとしなくていい。何が不安なのか、何を大切にしたいのか、どこまでなら頑張れるのか——それを一緒に言葉にしていくことが、ふたりの「納得」につながる。同じように感じられなくていい。ただ、感じ方が違うと知っていること。それだけで変わることがある。</div></div>
+      </div>
+      <div class="learn-card" onclick="toggleLearn(this)">
+        <div class="learn-header"><span class="learn-tag tag-amber-sm">地雷</span><span class="learn-title">妊婦や子連れを見てつらくなるのは、おかしくない</span><span class="learn-arrow">›</span></div>
+        <div class="learn-body">街で妊婦を見たとき、友人の妊娠報告を聞いたとき、「おめでとう」と言いながら心が痛む。そんな自分を責めているパートナーがいる。これは嫉妬でも悪意でもない。周りの人が何の苦労もなく手にしていることが自分にはできないという孤独から来ている。その感情はあなたへの不満ではなく、静かな絶望のかけら。責めないでほしい。<div class="learn-example">「なんでそんなこと思うの？」は禁句。ただ「そうか、しんどかったね」と受け止めるだけでいい。</div></div>
+      </div>
+    </div>
+
+    <!-- KIROKU -->
+    <div id="page-kiroku" class="page">
+      <div class="section-title">ふたりの歩み</div>
+      <div class="stats-grid">
+        <div class="stat-card"><div class="stat-num" id="stat-visits">-</div><div class="stat-label">通院回数</div></div>
+        <div class="stat-card"><div class="stat-num" id="stat-days">-</div><div class="stat-label">記録した日数</div></div>
+        <div class="stat-card"><div class="stat-num" id="stat-money">-</div><div class="stat-label">治療費合計（円）</div></div>
+        <div class="stat-card"><div class="stat-num" id="stat-subsidy">-</div><div class="stat-label">助成金（円）</div></div>
+      </div>
+
+      <div class="section-title">余裕度ゲージ</div>
+      <div class="card">
+        <div style="margin-bottom:12px">
+          <div style="display:flex;justify-content:space-between;margin-bottom:4px"><span style="font-size:12px;font-weight:500">わたし</span><span style="font-size:11px;color:var(--text-muted)" id="my-gauge-label">選んでください</span></div>
+          <div class="gauge-bar"><div class="gauge-fill fill-pink" id="my-gauge-fill" style="width:0%"></div></div>
+          <div class="gauge-steps">
+            <div class="gauge-step" onclick="setGauge('my',0,this)">限界</div>
+            <div class="gauge-step" onclick="setGauge('my',1,this)">しんどい</div>
+            <div class="gauge-step" onclick="setGauge('my',2,this)">まあまあ</div>
+            <div class="gauge-step" onclick="setGauge('my',3,this)">余裕あり</div>
+            <div class="gauge-step" onclick="setGauge('my',4,this)">大丈夫</div>
+          </div>
+        </div>
+        <div>
+          <div style="display:flex;justify-content:space-between;margin-bottom:4px"><span style="font-size:12px;font-weight:500" id="partner-gauge-who">パートナー</span><span style="font-size:11px;color:var(--text-muted)" id="partner-gauge-label">読み込み中...</span></div>
+          <div class="gauge-bar"><div class="gauge-fill fill-teal" id="partner-gauge-fill" style="width:0%"></div></div>
+        </div>
+        <div id="gauge-hint" style="background:var(--teal-light);border-radius:10px;padding:10px;margin-top:10px;font-size:12px;color:var(--teal-dark);line-height:1.7;display:none"></div>
+        <button class="btn btn-teal" onclick="saveGauge()" style="margin-top:8px">記録してパートナーに届ける</button>
+      </div>
+
+      <div class="section-title">通院カレンダー</div>
+      <div class="card" id="cal-wrap">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+          <button onclick="changeMonth(-1)" style="background:none;border:none;font-size:18px;cursor:pointer;color:var(--text-muted)">‹</button>
+          <span style="font-size:13px;font-weight:500" id="cal-month"></span>
+          <button onclick="changeMonth(1)" style="background:none;border:none;font-size:18px;cursor:pointer;color:var(--text-muted)">›</button>
+        </div>
+        <div class="cal-grid" id="cal-head"></div>
+        <div class="cal-grid" id="cal-body"></div>
+        <div style="display:flex;gap:12px;margin-top:8px;flex-wrap:wrap">
+          <div style="display:flex;align-items:center;gap:4px"><div class="dot dot-teal"></div><span style="font-size:10px;color:var(--text-muted)">通院</span></div>
+          <div style="display:flex;align-items:center;gap:4px"><div class="dot dot-pink"></div><span style="font-size:10px;color:var(--text-muted)">しんどかった日</span></div>
+          <div style="display:flex;align-items:center;gap:4px"><div class="dot dot-amber"></div><span style="font-size:10px;color:var(--text-muted)">治療記録</span></div>
+        </div>
+      </div>
+
+      <div class="section-title">治療記録（過去の日付も入力できます）</div>
+      <div class="card">
+        <div style="margin-bottom:10px">
+          <div style="font-size:11px;color:var(--text-muted);margin-bottom:6px">日付（過去の記録も入れられます）</div>
+          <input type="date" id="kiroku-date" class="input-field" style="font-size:13px;padding:10px 12px">
+        </div>
+        <div class="chip-row">
+          <span class="chip chip-teal" onclick="toggleChip(this)">通院した</span>
+          <span class="chip chip-teal" onclick="toggleChip(this)">採血・検査</span>
+          <span class="chip chip-teal" onclick="toggleChip(this)">移植した</span>
+          <span class="chip chip-teal" onclick="toggleChip(this)">採卵だった</span>
+          <span class="chip chip-pink" onclick="toggleChip(this)">判定が出た</span>
+          <span class="chip chip-pink" onclick="toggleChip(this)">陰性だった</span>
+          <span class="chip chip-teal" onclick="toggleChip(this)">陽性だった</span>
+          <span class="chip chip-amber" onclick="toggleChip(this)">身体がしんどかった</span>
+          <span class="chip chip-amber" onclick="toggleChip(this)">人工授精</span>
+          <span class="chip chip-amber" onclick="toggleChip(this)">タイミング法</span>
+        </div>
+        <textarea id="kiroku-memo" placeholder="先生に言われたこと、気になっていること" rows="2"></textarea>
+        <button class="btn btn-teal" onclick="saveKiroku()">記録してパートナーに届ける</button>
+      </div>
+
+      <div class="section-title">お金の記録</div>
+      <div class="card">
+        <div id="money-list"></div>
+        <button class="btn btn-outline" onclick="openMoneyModal()" style="margin-top:8px">＋ 費用を追加する</button>
+      </div>
+
+      <div class="section-title">薬のチェック</div>
+      <div id="medicine-list"><div class="loader">読み込み中...</div></div>
+      <button class="btn btn-outline" onclick="openAddMed()">＋ 薬を追加する</button>
+
+      <div class="section-title">ふたりの日記</div>
+      <div id="timeline-list"><div class="loader">読み込み中...</div></div>
+    </div>
+
+    <!-- WARM -->
+    <div id="page-warm" class="page">
+      <div class="section-title">あなたのここが好き</div>
+      <div class="card">
+        <div class="chip-row">
+          <span class="chip chip-pink" onclick="toggleChip(this)">いつも話を聞いてくれる</span>
+          <span class="chip chip-pink" onclick="toggleChip(this)">そばにいてくれるだけで安心する</span>
+          <span class="chip chip-pink" onclick="toggleChip(this)">笑わせてくれる</span>
+          <span class="chip chip-pink" onclick="toggleChip(this)">一緒にいて自然でいられる</span>
+          <span class="chip chip-pink" onclick="toggleChip(this)">あなたとなら乗り越えられる</span>
+          <span class="chip chip-pink" onclick="toggleChip(this)">気づかいが細かい</span>
+        </div>
+        <textarea id="warm-memo" placeholder="ひと言だけでも。「あの日○○してくれたこと、ずっと覚えてる」" rows="2"></textarea>
+        <button class="btn btn-pink" onclick="sendWarm()">届ける</button>
+      </div>
+
+      <div class="section-title">傷ついた言葉を記録する</div>
+      <div class="card">
+        <div class="card-sub" style="margin-bottom:10px">外からの言葉をひとりで抱えなくていい。ここに記録してふたりで受け止める。</div>
+        <div class="chip-row">
+          <span class="chip chip-amber" onclick="toggleChip(this)">義母から</span>
+          <span class="chip chip-amber" onclick="toggleChip(this)">義父から</span>
+          <span class="chip chip-amber" onclick="toggleChip(this)">母から</span>
+          <span class="chip chip-amber" onclick="toggleChip(this)">友人から</span>
+          <span class="chip chip-amber" onclick="toggleChip(this)">職場から</span>
+        </div>
+        <textarea id="hurt-memo" placeholder="覚えているまま書いていい。断片でも。" rows="2"></textarea>
+        <div style="background:var(--purple-light);border-radius:10px;padding:12px;margin:8px 0;font-size:12px;color:#4A3A7A;line-height:1.7">その言葉は相手の無知から来ている。でも傷ついた気持ちは本物。それはあなたが真剣に向き合っている証拠。</div>
+        <button class="btn btn-purple" onclick="sendHurt()">パートナーと一緒に受け止める</button>
+      </div>
+
+
+
+      <div class="section-title">ふたりの温かい記録</div>
+      <div id="warm-list"><div class="loader">読み込み中...</div></div>
+    </div>
+
+  </div>
+
+  <nav class="bottom-nav">
+    <button class="nav-btn active" onclick="showPage('home',this)">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="#B07070" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      <span class="nav-label">ホーム</span>
+    </button>
+    <button class="nav-btn" onclick="showPage('kimochi',this)">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="#C0B8B0" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+      <span class="nav-label">気持ち</span>
+    </button>
+    <button class="nav-btn" onclick="showPage('partner',this)">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="#C0B8B0" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+      <span class="nav-label">ふたり</span>
+    </button>
+    <button class="nav-btn" onclick="showPage('kiroku',this)">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="#C0B8B0" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+      <span class="nav-label">記録</span>
+    </button>
+    <button class="nav-btn" onclick="showPage('warm',this)">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="#C0B8B0" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      <span class="nav-label">温かく</span>
+    </button>
+  </nav>
+</div>
+
+<!-- MODALS -->
+
+
+<div class="modal-bg" id="med-modal">
+  <div class="modal">
+    <button class="close-btn" onclick="closeMedModal()">×</button>
+    <div class="modal-title">薬を追加する</div>
+    <input class="input-field" id="med-name" placeholder="薬の名前（例：デュファストン）" style="margin-bottom:10px">
+    <div class="chip-row">
+      <span class="chip chip-pink" onclick="toggleChip(this)">飲み薬</span>
+      <span class="chip chip-teal" onclick="toggleChip(this)">貼り薬</span>
+      <span class="chip chip-purple" onclick="toggleChip(this)">膣錠</span>
+    </div>
+    <div class="chip-row">
+      <span class="chip chip-gray" onclick="toggleChip(this)">朝</span>
+      <span class="chip chip-gray" onclick="toggleChip(this)">昼</span>
+      <span class="chip chip-gray" onclick="toggleChip(this)">夜</span>
+      <span class="chip chip-gray" onclick="toggleChip(this)">就寝前</span>
+      <span class="chip chip-gray" onclick="toggleChip(this)">朝食前</span>
+    </div>
+    <input class="input-field" id="med-side" placeholder="副作用メモ（省略OK）" style="margin:10px 0">
+    <button class="btn btn-teal" onclick="saveMedicine()">登録する</button>
+  </div>
+</div>
+<div class="modal-bg" id="money-modal">
+  <div class="modal">
+    <button class="close-btn" onclick="closeMoneyModal()">×</button>
+    <div class="modal-title">費用を追加する</div>
+    <input class="input-field" id="money-label" placeholder="内容（例：採卵、移植、薬代）" style="margin-bottom:10px">
+    <input class="input-field" id="money-amount" type="number" placeholder="金額（円）" style="margin-bottom:10px">
+    <div style="font-size:11px;color:#9A9590;margin-bottom:6px">日付</div>
+    <input type="date" id="money-date" class="input-field" style="font-size:13px;padding:10px 12px;margin-bottom:10px">
+    <div class="chip-row" id="money-type-chips">
+      <span class="chip chip-teal" onclick="selectMoneyType(this)">保険</span>
+      <span class="chip chip-pink" onclick="selectMoneyType(this)">自費</span>
+      <span class="chip chip-amber" onclick="selectMoneyType(this)">助成金</span>
+    </div>
+    <button class="btn btn-amber" onclick="saveMoney()">追加する</button>
+  </div>
+</div>
+
+<div class="modal-bg" id="privacy-modal">
+  <div class="modal">
+    <button class="close-btn" onclick="closePrivacy()" style="float:right;background:var(--gray-light);border:none;border-radius:50%;width:28px;height:28px;font-size:16px;cursor:pointer;color:var(--gray)">×</button>
+    <div style="font-size:16px;font-weight:500;margin-bottom:4px">プライバシー設定</div>
+    <div style="font-size:12px;color:var(--text-muted);margin-bottom:16px;line-height:1.6">全部を共有しなくていい。自分だけの記録も守られる。</div>
+    <div class="privacy-row">
+      <div class="privacy-info"><div class="privacy-name">気持ちカード</div><div class="privacy-desc">今日の感情をパートナーに届ける</div></div>
+      <div class="toggle-wrap"><input type="checkbox" class="toggle-input" id="priv-kimochi" checked><div class="toggle-track"></div><div class="toggle-thumb"></div></div>
+    </div>
+    <div class="privacy-row">
+      <div class="privacy-info"><div class="privacy-name">治療記録</div><div class="privacy-desc">通院・薬・処置の記録を共有する</div></div>
+      <div class="toggle-wrap"><input type="checkbox" class="toggle-input" id="priv-kiroku" checked><div class="toggle-track"></div><div class="toggle-thumb"></div></div>
+    </div>
+    <div class="privacy-row">
+      <div class="privacy-info"><div class="privacy-name">お金の記録</div><div class="privacy-desc">費用・助成金の記録を共有する</div></div>
+      <div class="toggle-wrap"><input type="checkbox" class="toggle-input" id="priv-money" checked><div class="toggle-track"></div><div class="toggle-thumb"></div></div>
+    </div>
+    <div class="privacy-row">
+      <div class="privacy-info"><div class="privacy-name">今日の自分へのメモ</div><div class="privacy-desc">セルフケアの記録（デフォルト非公開）</div></div>
+      <div class="toggle-wrap"><input type="checkbox" class="toggle-input" id="priv-self"><div class="toggle-track"></div><div class="toggle-thumb"></div></div>
+    </div>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+const SUPABASE_URL='https://tnnvzbingmgyetdeijnj.supabase.co';
+const SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRubnZ6YmluZ21neWV0ZGVpam5qIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUyODk1NDEsImV4cCI6MjA5MDg2NTU0MX0.Bw-6pHRJbmsR1HfAcnG7ZSgUut-wkLEbyZcxq4y5WTI';
+const {createClient}=supabase;
+const db=createClient(SUPABASE_URL,SUPABASE_KEY);
+let myName='',partnerName='',coupleId='';
+let selectedReplyText='',convertedIMsg='';
+let calYear=new Date().getFullYear(),calMonth=new Date().getMonth();
+let myGaugeIdx=-1;
+
+window.onload=async()=>{
+  // 今日の日付を日付フィールドの初期値に設定
+  const _d=new Date();const _jst=new Date(_d.getTime()+9*60*60*1000);
+  const todayVal=_jst.toISOString().split('T')[0];
+  const kd=document.getElementById('kiroku-date');
+  const md=document.getElementById('money-date');
+  if(kd)kd.value=todayVal;
+  if(md)md.value=todayVal;
+  const saved=localStorage.getItem('fumi_user');
+  if(saved){const u=JSON.parse(saved);myName=u.myName;partnerName=u.partnerName;coupleId=u.coupleId;showMain();}
+};
+
+async function startApp(){
+  myName=document.getElementById('my-name').value.trim();
+  partnerName=document.getElementById('partner-name').value.trim();
+  const code=document.getElementById('couple-code').value.trim();
+  if(!myName||!partnerName||!code){showToast('全て入力してください');return;}
+  coupleId=btoa(unescape(encodeURIComponent(code))).replace(/[^a-zA-Z0-9]/g,'').substring(0,20);
+  const{data:existing}=await db.from('couples').select('couple_id').eq('couple_id',coupleId).limit(1);
+  if(!existing||existing.length===0){
+    const{error}=await db.from('couples').insert({couple_id:coupleId,user1_name:myName,user2_name:partnerName});
+    if(error){showToast('接続エラー: '+error.message);return;}
+  }
+  localStorage.setItem('fumi_user',JSON.stringify({myName,partnerName,coupleId}));
+  showMain();
+}
+
+function showMain(){
+  document.getElementById('setup').classList.remove('active');
+  document.getElementById('main').classList.add('active');
+  document.getElementById('header-user').textContent=myName;
+  document.getElementById('partner-gauge-who').textContent=partnerName;
+  updateGreeting();
+  loadInbox();loadGoodHistory();loadPartnerMessages();loadMedicines();loadTimeline();loadWarmList();loadMoneyList();loadCalendar();loadPartnerGauge();loadStats();checkPartnerStatus();loadPastWords();
+  setInterval(loadInbox,15000);
+  setInterval(checkPartnerStatus,30000);
+  setInterval(loadPartnerGauge,30000);
+}
+
+function updateGreeting(){
+  const h=new Date().getHours();
+  const g=h<11?'おはようございます':h<17?'こんにちは':'おつかれさまです';
+  const el=document.getElementById('greeting');
+  if(el)el.textContent=g+'、'+myName+'さん';
+}
+
+async function checkPartnerStatus(){
+  const since=new Date(Date.now()-10*60*1000).toISOString();
+  const{data}=await db.from('records').select('created_at').eq('couple_id',coupleId).eq('user_id',partnerName).gte('created_at',since).limit(1);
+  const online=data&&data.length>0;
+  document.getElementById('status-dot').className='status-dot'+(online?' online':'');
+  document.getElementById('status-text').textContent=online?partnerName+' がいます':partnerName;
+}
+
+function showPage(name,btn){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b=>{
+    b.classList.remove('active');
+    const svg=b.querySelector('svg');
+    if(svg)svg.setAttribute('stroke','#C0B8B0');
+  });
+  document.getElementById('page-'+name).classList.add('active');
+  btn.classList.add('active');
+  const activeSvg=btn.querySelector('svg');
+  if(activeSvg)activeSvg.setAttribute('stroke','#B07070');
+  if(name==='home'){loadInbox();loadGoodHistory();}
+  if(name==='partner'){loadPartnerMessages();loadPastWords();}
+  if(name==='kiroku'){loadMedicines();loadTimeline();loadCalendar();loadMoneyList();loadPartnerGauge();loadStats();}
+  if(name==='warm')loadWarmList();
+}
+
+function toggleChip(el){el.classList.toggle('sel');}
+function getChips(pageId){return Array.from(document.getElementById(pageId).querySelectorAll('.chip.sel')).map(c=>c.textContent.trim());}
+
+// SOS
+async function sendSOS(){
+  const{error}=await db.from('messages').insert({couple_id:coupleId,from_user:myName,to_user:partnerName,type:'sos',content:'今すぐそばにいてほしい。SOS。',is_read:false});
+  if(error){showToast('エラー: '+error.message);return;}
+  showToast('SOSを届けました');
+}
+
+// KIMOCHI
+async function sendKimochi(){
+  const chips=getChips('page-kimochi');
+  const memo=document.getElementById('kimochi-memo').value;
+  if(chips.length===0&&!memo){showToast('気持ちを選んでください');return;}
+  const isSafe=chips.includes('消えてしまいたかった');
+  if(isSafe)document.getElementById('sos-safe').style.display='block';
+  const priv=document.getElementById('priv-kimochi').checked;
+  if(priv){
+    const{error}=await db.from('messages').insert({couple_id:coupleId,from_user:myName,to_user:partnerName,type:'kimochi',content:JSON.stringify({chips,memo}),is_read:false});
+    if(error){showToast('エラー: '+error.message);return;}
+  }
+  await db.from('records').insert({couple_id:coupleId,user_id:myName,record_type:'kimochi',content:memo,chips:chips.join(','),date:today()});
+  document.getElementById('page-kimochi').querySelectorAll('.chip.sel').forEach(c=>c.classList.remove('sel'));
+  document.getElementById('kimochi-memo').value='';
+  showToast(priv?'パートナーに届けました':'記録しました');
+}
+
+async function saveKimochiPrivate(){
+  const chips=getChips('page-kimochi');
+  const memo=document.getElementById('kimochi-memo').value;
+  const{error}=await db.from('records').insert({couple_id:coupleId,user_id:myName,record_type:'kimochi_private',content:memo,chips:chips.join(','),date:today()});
+  if(error){showToast('エラー: '+error.message);return;}
+  document.getElementById('page-kimochi').querySelectorAll('.chip.sel').forEach(c=>c.classList.remove('sel'));
+  document.getElementById('kimochi-memo').value='';
+  showToast('自分の記録に保存しました');
+}
+
+// 背中を押す言葉（パートナーの過去の言葉）
+async function loadPastWords(){
+  const{data}=await db.from('messages').select('content').eq('couple_id',coupleId).eq('from_user',partnerName).in('type',['partner','warm']).order('created_at',{ascending:false}).limit(5);
+  if(!data||data.length===0){document.getElementById('past-words').textContent='パートナーからのメッセージが届くとここに表示されます';return;}
+  const words=data.map(m=>{
+    let t=m.content;try{const p=JSON.parse(m.content);t=p.memo||(p.chips&&p.chips.length>0?(Array.isArray(p.chips)?p.chips[0]:p.chips):t);}catch(e){}return t;
+  }).filter(t=>t&&t.length>0);
+  document.getElementById('past-words').innerHTML='パートナーがこれまでくれた言葉：<br>'+words.map(w=>`「${w}」`).join('<br>');
+}
+
+// HAPPY
+async function sendHappy(){
+  const chips=getChips('page-kimochi');
+  const memo=document.getElementById('happy-memo').value;
+  if(chips.length===0&&!memo){showToast('嬉しかったことを選んでください');return;}
+  const content=JSON.stringify({chips,memo});
+  const{error}=await db.from('messages').insert({couple_id:coupleId,from_user:myName,to_user:partnerName,type:'warm',content,is_read:false});
+  if(error){showToast('エラー: '+error.message);return;}
+  await db.from('records').insert({couple_id:coupleId,user_id:myName,record_type:'warm',content:memo||chips[0]||'',chips:chips.join(','),date:today()});
+  document.getElementById('page-kimochi').querySelectorAll('.chip.sel').forEach(c=>c.classList.remove('sel'));
+  document.getElementById('happy-memo').value='';
+  showToast('届けました');
+}
+
+// GOOD
+async function sendGood(){
+  const chips=Array.from(document.getElementById('good-chips').querySelectorAll('.chip.sel')).map(c=>c.textContent.trim());
+  const memo=document.getElementById('good-memo').value;
+  if(chips.length===0&&!memo){showToast('よかったことを選んでください');return;}
+  const{error:e1}=await db.from('messages').insert({couple_id:coupleId,from_user:myName,to_user:partnerName,type:'good',content:JSON.stringify({chips,memo}),is_read:false});
+  if(e1){showToast('エラー: '+e1.message);return;}
+  await db.from('records').insert({couple_id:coupleId,user_id:myName,record_type:'good',content:memo||chips[0]||'',chips:chips.join(','),date:today()});
+  document.getElementById('good-chips').querySelectorAll('.chip.sel').forEach(c=>c.classList.remove('sel'));
+  document.getElementById('good-memo').value='';
+  showToast('パートナーと共有しました');
+  loadGoodHistory();
+}
+
+async function loadGoodHistory(){
+  const{data}=await db.from('records').select('*').eq('couple_id',coupleId).eq('record_type','good').order('created_at',{ascending:false}).limit(4);
+  if(!data||data.length===0){document.getElementById('good-history').innerHTML='';return;}
+  document.getElementById('good-history').innerHTML='<div class="section-title">最近のよかったこと</div>'+data.map(r=>`<div class="warm-item"><span class="warm-from ${r.user_id===myName?'warm-me':'warm-partner'}">${r.user_id}</span><span class="warm-text">${r.content||r.chips}</span><span class="warm-date">${fmtDate(r.created_at)}</span></div>`).join('');
+}
+
+// INBOX
+async function loadInbox(){
+  const{data,error}=await db.from('messages').select('*').eq('couple_id',coupleId).eq('to_user',myName).order('created_at',{ascending:false}).limit(10);
+  if(error){console.error(error);return;}
+  if(!data||data.length===0){document.getElementById('inbox-list').innerHTML='<div style="text-align:center;padding:20px;color:var(--text-muted);font-size:13px">まだメッセージはありません</div>';return;}
+  const icons={sos:'🆘',kimochi:'💭',good:'🌱',partner:'🤝',warm:'🌸',hurt:'🫂',kiroku:'📋',meeting:'🗣️',recover:'🙏',i_message:'💬'};
+  const labels={sos:'SOS',kimochi:'気持ち',good:'よかったこと',partner:'パートナーより',warm:'温かい記録',hurt:'傷ついた言葉',kiroku:'治療記録',meeting:'ふたり会議',recover:'フォロー',i_message:'気持ち'};
+  document.getElementById('inbox-list').innerHTML=data.map(m=>{
+    let text=m.content;try{const p=JSON.parse(m.content);text=p.memo||(Array.isArray(p.chips)&&p.chips.length>0?p.chips.slice(0,2).join('・'):m.content);}catch(e){}
+    return `<div class="inbox-item ${m.is_read?'':'unread'}" onclick="markRead(${m.id})"><span class="inbox-icon">${icons[m.type]||'📨'}</span><div class="inbox-content"><div class="inbox-title">${m.from_user}より — ${labels[m.type]||m.type}</div><div class="inbox-text">${text}</div></div><div class="inbox-time">${fmtDate(m.created_at)}</div></div>`;
+  }).join('');
+}
+
+async function markRead(id){await db.from('messages').update({is_read:true}).eq('id',id);}
+
+// PARTNER MESSAGES
+async function loadPartnerMessages(){
+  const{data,error}=await db.from('messages').select('*').eq('couple_id',coupleId).eq('from_user',partnerName).in('type',['kimochi','partner']).order('created_at',{ascending:false}).limit(3);
+  if(error){console.error(error);return;}
+  if(!data||data.length===0){document.getElementById('partner-messages').innerHTML='<div style="padding:12px;color:var(--text-muted);font-size:13px">まだメッセージはありません</div>';return;}
+  document.getElementById('partner-messages').innerHTML=data.map(m=>{
+    let chips=[],memo='';try{const p=JSON.parse(m.content);chips=p.chips||[];memo=p.memo||'';}catch(e){}
+    return `<div class="partner-msg"><div class="partner-msg-label">${partnerName}より — ${fmtDate(m.created_at)}</div><div class="chip-row">${chips.map(c=>`<span class="chip chip-teal" style="font-size:11px;padding:4px 10px">${c}</span>`).join('')}</div>${memo?`<div class="partner-msg-text" style="margin-top:8px">${memo}</div>`:''}</div>`;
+  }).join('');
+}
+
+// REPLY
+let selectedReply='';
+function selectReply(el,text){
+  document.getElementById('reply-btns').querySelectorAll('.reply-btn').forEach(b=>b.classList.remove('sel'));
+  el.classList.add('sel');
+  selectedReply=text;
+  document.getElementById('reply-preview').style.display='block';
+  document.getElementById('reply-preview').textContent='「'+text+'」';
+  document.getElementById('reply-send-btn').style.display='block';
+}
+async function sendReply(){
+  if(!selectedReply){showToast('返事を選んでください');return;}
+  const{error}=await db.from('messages').insert({couple_id:coupleId,from_user:myName,to_user:partnerName,type:'partner',content:JSON.stringify({chips:[selectedReply],memo:''}),is_read:false});
+  if(error){showToast('エラー: '+error.message);return;}
+  document.getElementById('reply-btns').querySelectorAll('.reply-btn').forEach(b=>b.classList.remove('sel'));
+  document.getElementById('reply-preview').style.display='none';
+  document.getElementById('reply-send-btn').style.display='none';
+  selectedReply='';
+  showToast('届けました');
+}
+
+// RECOVER
+const recoverData={
+  '励ましたつもりが傷つけた':{hint:'今はアドバイスより「受け止めたかった」の言葉が届く。',word:'さっき、うまく言えなかった。あなたのつらさをもっとちゃんと受け止めたかった。'},
+  'アドバイスして怒らせた':{hint:'解決しようとしすぎた。今必要なのはただ聞くこと。',word:'さっきはアドバイスばかりしてしまった。本当はただ聞いてほしかったんだよね。聞かせて。'},
+  'ごめんねで余計こじれた':{hint:'「ごめん」は会話を閉じる言葉になりやすい。「聞きたい」に変えると開く。',word:'さっきは謝るだけで終わらせてしまった。あなたの気持ちをちゃんと聞きたい。'},
+  '黙っていたら怒らせた':{hint:'沈黙の理由を一言説明するだけで「無関心」という誤解が解けることが多い。',word:'さっき何も言えなかった。無視していたわけじゃない。どう言えばいいかわからなかっただけで、ちゃんとここにいるよ。'}
+};
+document.getElementById('recover-chips').addEventListener('click',e=>{
+  if(!e.target.classList.contains('chip'))return;
+  setTimeout(()=>{
+    const sel=document.getElementById('recover-chips').querySelector('.chip.sel');
+    if(sel){
+      const d=recoverData[sel.textContent.trim()]||{};
+      document.getElementById('recover-hint').style.display='block';
+      document.getElementById('recover-hint').textContent=d.hint||'';
+      document.getElementById('recover-word').style.display='block';
+      document.getElementById('recover-word').value=d.word||'';
+      document.getElementById('recover-btn').style.display='block';
+    }
+  },50);
+});
+async function sendRecover(){
+  const word=document.getElementById('recover-word').value;
+  if(!word){showToast('言葉を入れてください');return;}
+  const{error}=await db.from('messages').insert({couple_id:coupleId,from_user:myName,to_user:partnerName,type:'recover',content:word,is_read:false});
+  if(error){showToast('エラー: '+error.message);return;}
+  document.getElementById('recover-chips').querySelectorAll('.chip.sel').forEach(c=>c.classList.remove('sel'));
+  document.getElementById('recover-hint').style.display='none';
+  document.getElementById('recover-word').style.display='none';
+  document.getElementById('recover-btn').style.display='none';
+  showToast('届けました');
+}
+
+// MEETING
+async function sendMeeting(){
+  const chips=getChips('page-partner');
+  const topic=chips.join('・')||'ふたりのこと';
+  const content=`ふたり会議のお誘い。テーマ：${topic}。今日、話せそう？`;
+  const{error}=await db.from('messages').insert({couple_id:coupleId,from_user:myName,to_user:partnerName,type:'meeting',content,is_read:false});
+  if(error){showToast('エラー: '+error.message);return;}
+  showToast('「今日話せそう？」と届けました');
+}
+
+// I MESSAGE
+function convertIMessage(){
+  const input=document.getElementById('i-input').value.trim();
+  if(!input){showToast('変換したい言葉を入力してください');return;}
+  const converted=`私は最近、${input}、ということが続いていて、少し寂しく感じています。一緒に考えてもらえると嬉しい。`;
+  convertedIMsg=converted;
+  document.getElementById('i-output').style.display='block';
+  document.getElementById('i-output').textContent=converted;
+  document.getElementById('i-send-btn').style.display='block';
+}
+async function sendIMessage(){
+  const{error}=await db.from('messages').insert({couple_id:coupleId,from_user:myName,to_user:partnerName,type:'i_message',content:convertedIMsg,is_read:false});
+  if(error){showToast('エラー: '+error.message);return;}
+  document.getElementById('i-input').value='';
+  document.getElementById('i-output').style.display='none';
+  document.getElementById('i-send-btn').style.display='none';
+  showToast('届けました');
+}
+
+// KIROKU
+async function saveKiroku(){
+  const chips=getChips('page-kiroku');
+  const memo=document.getElementById('kiroku-memo').value;
+  if(chips.length===0&&!memo){showToast('記録内容を選んでください');return;}
+  const isVisit=chips.includes('通院した');
+  const rt=isVisit?'visit':'kiroku';
+  const kirokuDate=document.getElementById('kiroku-date').value||today();
+  const{error}=await db.from('records').insert({couple_id:coupleId,user_id:myName,record_type:rt,content:memo,chips:chips.join(','),date:kirokuDate});
+  if(error){showToast('保存エラー: '+error.message);return;}
+  if(document.getElementById('priv-kiroku').checked){
+    await db.from('messages').insert({couple_id:coupleId,from_user:myName,to_user:partnerName,type:'kiroku',content:JSON.stringify({chips,memo}),is_read:false});
+  }
+  document.getElementById('page-kiroku').querySelectorAll('.chip.sel').forEach(c=>c.classList.remove('sel'));
+  document.getElementById('kiroku-memo').value='';
+  document.getElementById('kiroku-date').value='';
+  showToast('記録しました');
+  loadTimeline();loadStats();loadCalendar();
+}
+
+async function loadTimeline(){
+  const{data,error}=await db.from('records').select('*').eq('couple_id',coupleId).order('date',{ascending:false}).order('created_at',{ascending:false}).limit(100);
+  if(error){console.error(error);document.getElementById('timeline-list').innerHTML='<div style="padding:12px;color:var(--text-muted);font-size:13px">読み込みエラー</div>';return;}
+  if(!data||data.length===0){document.getElementById('timeline-list').innerHTML='<div style="padding:12px;color:var(--text-muted);font-size:13px">まだ記録がありません</div>';return;}
+  const byDate={};
+  data.forEach(r=>{
+    const d=r.date||r.created_at?.split('T')[0]||today();
+    if(!byDate[d])byDate[d]=[];
+    byDate[d].push(r);
+  });
+  const sortedDates=Object.keys(byDate).sort((a,b)=>b.localeCompare(a));
+  const sevenDaysAgo=new Date(new Date().getTime()+9*60*60*1000-7*24*60*60*1000).toISOString().split('T')[0];
+  const recentDates=sortedDates.filter(d=>d>=sevenDaysAgo);
+  const oldDates=sortedDates.filter(d=>d<sevenDaysAgo);
+  let html=recentDates.map(date=>buildDayBlock(date,byDate[date])).filter(Boolean).join('');
+  if(oldDates.length>0){
+    const oldByMonth={};
+    oldDates.forEach(date=>{
+      const m=date.substring(0,7);
+      if(!oldByMonth[m])oldByMonth[m]=[];
+      oldByMonth[m].push(date);
+    });
+    const oldMonths=Object.keys(oldByMonth).sort((a,b)=>b.localeCompare(a));
+    html+='<div style="margin-top:8px">';
+    oldMonths.forEach(m=>{
+      const [y,mo]=m.split('-');
+      const label=y+'年'+parseInt(mo)+'月';
+      const days=oldByMonth[m];
+      // 件数は日数でカウント
+      const dayCount=days.length;
+      const inner=days.map(date=>buildDayBlock(date,byDate[date])).filter(Boolean).join('');
+      if(!inner)return;
+      const displayCount=inner.split('class="diary-day"').length-1;
+      html+=`<div style="margin-bottom:8px">
+        <div onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display==='none'?'block':'none';this.querySelector('.marr').textContent=this.nextElementSibling.style.display==='none'?'▼':'▲'" style="display:flex;justify-content:space-between;align-items:center;padding:8px 4px;cursor:pointer;border-bottom:0.5px solid var(--border);margin-bottom:8px">
+          <span style="font-size:12px;font-weight:500;color:var(--text)">${label}</span>
+          <div style="display:flex;align-items:center;gap:6px"><span style="font-size:10px;color:var(--text-muted)">${displayCount}日</span><span class="marr" style="font-size:11px;color:var(--text-muted)">▼</span></div>
+        </div>
+        <div style="display:none">${inner}</div>
+      </div>`;
+    });
+    html+='</div>';
+  }
+  document.getElementById('timeline-list').innerHTML=html||'<div style="padding:12px;color:var(--text-muted);font-size:13px">まだ記録がありません</div>';
+}
+
+function buildDayBlock(date,recs){
+  const IC={
+    visit:'<svg class="diary-row-icon" viewBox="0 0 24 24" fill="none" stroke="#8AB8A8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M9 12l2 2 4-4"/></svg>',
+    med:'<svg class="diary-row-icon" viewBox="0 0 24 24" fill="none" stroke="#A8B8D0" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93l-1.41 1.41M6.34 17.66l-1.41 1.41M20 12h-2M6 12H4M17.66 17.66l-1.41-1.41M7.76 7.76L6.34 6.34"/></svg>',
+    kimochi:'<svg class="diary-row-icon" viewBox="0 0 24 24" fill="none" stroke="#C8A0B0" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>',
+    good:'<svg class="diary-row-icon" viewBox="0 0 24 24" fill="none" stroke="#8AB8A8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>',
+    money:'<svg class="diary-row-icon" viewBox="0 0 24 24" fill="none" stroke="#C8A888" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>',
+    hurt:'<svg class="diary-row-icon" viewBox="0 0 24 24" fill="none" stroke="#C8A888" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="23" y1="11" x2="17" y2="11"/></svg>'
+  };
+  const visits=recs.filter(r=>r.record_type==='visit');
+  const kirokus=recs.filter(r=>r.record_type==='kiroku');
+  const kimochis=recs.filter(r=>['kimochi','kimochi_private'].includes(r.record_type));
+  const goods=recs.filter(r=>r.record_type==='good');
+  const warms=recs.filter(r=>r.record_type==='warm');
+  const hurts=recs.filter(r=>r.record_type==='hurt');
+  const medChecks=recs.filter(r=>r.record_type==='med_check');
+  const moneys=recs.filter(r=>r.record_type==='money');
+  const gauges=recs.filter(r=>r.record_type==='gauge');
+  const hasVisit=visits.length>0||(kirokus.length>0&&kirokus.some(r=>r.chips&&r.chips.includes('通院した')));
+  const hasHard=kimochis.some(r=>r.chips&&(r.chips.includes('しんどい')||r.chips.includes('涙')||r.chips.includes('消えて')));
+  const hasGood=goods.length>0||warms.length>0;
+  const badge=hasVisit?'<span class="diary-day-badge badge-visit">通院あり</span>':hasHard?'<span class="diary-day-badge badge-hard">しんどかった日</span>':hasGood?'<span class="diary-day-badge badge-good">よかったこと</span>':'';
+  const d=new Date(date+'T12:00:00');
+  const dow=['日','月','火','水','木','金','土'][d.getDay()];
+  const dateStr=`${d.getMonth()+1}月${d.getDate()}日（${dow}）`;
+  let rows='';
+  if(visits.length>0||kirokus.length>0){
+    const allK=[...visits,...kirokus];
+    const chips=allK.flatMap(r=>r.chips?r.chips.split(',').filter(Boolean):[]);
+    const memos=allK.map(r=>r.content).filter(Boolean);
+    rows+=`<div class="diary-row">${IC.visit}<div class="diary-row-content"><div class="diary-chips">${chips.map(c=>`<span class="diary-chip dc-teal">${c}</span>`).join('')}</div>${memos.map(m=>`<div class="diary-memo">${m}</div>`).join('')}</div></div>`;
+  }
+  if(medChecks.length>0){
+    rows+=`<div class="diary-row">${IC.med}<div class="diary-row-content"><div class="diary-chips"><span class="diary-chip dc-gray">薬チェック ✓ ${medChecks.length}件</span></div></div></div>`;
+  }
+  if(kimochis.length>0){
+    const kimochiRows=kimochis.map((r,i)=>{
+      const chips=r.chips?r.chips.split(',').filter(Boolean):[];
+      const who=r.user_id===myName?
+        `<span style="font-size:9px;padding:1px 6px;border-radius:6px;background:#FBEDF0;color:#B07088;margin-bottom:4px;display:inline-block">${r.user_id}</span>`:
+        `<span style="font-size:9px;padding:1px 6px;border-radius:6px;background:#EAF4F0;color:#5A8878;margin-bottom:4px;display:inline-block">${r.user_id}</span>`;
+      const sep=i>0?'border-top:0.5px solid #F0ECE8;margin-top:6px;padding-top:6px':'';
+      return `<div style="${sep}">${who}<div class="diary-chips">${chips.map(c=>`<span class="diary-chip dc-pink">${c}</span>`).join('')}</div>${r.content?`<div class="diary-memo">${r.content}</div>`:''}</div>`;
+    }).join('');
+    rows+=`<div class="diary-row">${IC.kimochi}<div class="diary-row-content">${kimochiRows}</div></div>`;
+  }
+  if(gauges.length>0){
+    rows+=`<div class="diary-row">${IC.med}<div class="diary-row-content"><div class="diary-chips"><span class="diary-chip dc-gray">余裕度：${gauges[0].chips||'記録あり'}</span></div></div></div>`;
+  }
+  if(goods.length>0||warms.length>0){
+    const allGoods=[...goods,...warms].filter(r=>r.content);
+    const goodRows=allGoods.map((r,i)=>{
+      const who=r.user_id===myName?
+        `<span style="font-size:9px;padding:1px 6px;border-radius:6px;background:#FBEDF0;color:#B07088;margin-right:6px;flex-shrink:0">${r.user_id}</span>`:
+        `<span style="font-size:9px;padding:1px 6px;border-radius:6px;background:#EAF4F0;color:#5A8878;margin-right:6px;flex-shrink:0">${r.user_id}</span>`;
+      const sep=i>0?'border-top:0.5px solid #F0ECE8;margin-top:6px;padding-top:6px':'';
+      return `<div style="display:flex;align-items:flex-start;${sep}">${who}<div class="diary-text" style="flex:1">${r.content}</div></div>`;
+    }).join('');
+    rows+=`<div class="diary-row">${IC.good}<div class="diary-row-content">${goodRows}</div></div>`;
+  }
+  if(hurts.length>0){
+    rows+=`<div class="diary-row">${IC.hurt}<div class="diary-row-content"><div class="diary-chips"><span class="diary-chip dc-amber">傷ついた言葉を記録</span></div></div></div>`;
+  }
+  if(moneys.length>0){
+    rows+=`<div class="diary-row">${IC.money}<div class="diary-row-content">${moneys.map(r=>`<div class="diary-text" style="color:var(--amber)">${r.content}</div>`).join('')}</div></div>`;
+  }
+  if(!rows)return '';
+  return `<div class="diary-day"><div class="diary-day-header"><span class="diary-day-date">${dateStr}</span>${badge}</div>${rows}</div>`;
+}
+
+
+async function loadStats(){
+  // 通院回数
+  const{data:allRecsForStats}=await db.from('records').select('record_type,chips').eq('couple_id',coupleId);
+  const visitCount=allRecsForStats?allRecsForStats.filter(r=>
+    r.record_type==='visit'||(r.chips&&r.chips.includes('通院した'))
+  ).length:0;
+  // 記録した日数
+  const{data:all}=await db.from('records').select('date').eq('couple_id',coupleId).eq('user_id',myName);
+  // お金の記録
+  const{data:moneyData}=await db.from('records').select('content,chips,date').eq('couple_id',coupleId).eq('record_type','money');
+  let totalPay=0,totalSub=0;
+  if(moneyData)moneyData.forEach(m=>{
+    const match=m.content?m.content.match(/[¥￥]([\d,]+)/):null;
+    const amt=match?parseInt(match[1].replace(/,/g,'')):parseInt(m.date)||0;
+    if(m.chips==='助成金')totalSub+=amt;
+    else totalPay+=amt;
+  });
+  document.getElementById('stat-visits').textContent=visitCount;
+  document.getElementById('stat-days').textContent=all?new Set(all.map(r=>r.date)).size:0;
+  // 治療費：10万以上は「〇〇.〇万円」、それ未満は「〇〇〇円」
+  const fmtMoney=n=>n>=100000?(n/10000).toFixed(1)+'万':n.toLocaleString();
+  document.getElementById('stat-money').textContent=totalPay>0?fmtMoney(totalPay):'0';
+  document.getElementById('stat-subsidy').textContent=totalSub>0?fmtMoney(totalSub):'0';
+}
+
+// CALENDAR
+let calRecords=[];
+async function loadCalendar(){
+  const start=new Date(calYear,calMonth,1).toISOString().split('T')[0];
+  const end=new Date(calYear,calMonth+1,0).toISOString().split('T')[0];
+  const{data}=await db.from('records').select('date,record_type').eq('couple_id',coupleId).gte('date',start).lte('date',end);
+  calRecords=data||[];
+  renderCalendar();
+}
+function renderCalendar(){
+  const months=['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'];
+  document.getElementById('cal-month').textContent=calYear+'年'+months[calMonth];
+  const head=document.getElementById('cal-head');
+  head.innerHTML=['日','月','火','水','木','金','土'].map(d=>`<div class="cal-dow">${d}</div>`).join('');
+  const first=new Date(calYear,calMonth,1).getDay();
+  const last=new Date(calYear,calMonth+1,0).getDate();
+  const todayStr=new Date().toISOString().split('T')[0];
+  let html='';
+  for(let i=0;i<first;i++)html+='<div></div>';
+  for(let d=1;d<=last;d++){
+    const ds=calYear+'-'+(String(calMonth+1).padStart(2,'0'))+'-'+(String(d).padStart(2,'0'));
+    const recs=calRecords.filter(r=>r.date===ds);
+    const dots=recs.map(r=>{
+      const cls=r.record_type==='visit'?'dot-teal':r.record_type==='kimochi'?'dot-pink':'dot-amber';
+      return `<div class="dot ${cls}"></div>`;
+    }).slice(0,3).join('');
+    html+=`<div class="cal-day ${ds===todayStr?'today':''}">${d}<div class="cal-dot">${dots}</div></div>`;
+  }
+  document.getElementById('cal-body').innerHTML=html;
+}
+function changeMonth(dir){calMonth+=dir;if(calMonth<0){calMonth=11;calYear--;}if(calMonth>11){calMonth=0;calYear++;}loadCalendar();}
+
+// GAUGE
+const gaugeLabels=['限界','しんどい','まあまあ','余裕あり','大丈夫'];
+const gaugeWidths=[10,30,60,80,100];
+const gaugeHints=[
+  ['今日は本当にしんどい状態。ただそばにいてもらうだけでいい。','ふたりとも余裕がない日。お互いを責めないで。','ふたりとも余裕がない日。静かに過ごしていい。','あなたは限界。パートナーには余裕があります。SOSを出しやすいタイミング。','あなたは限界。パートナーに気持ちを届けてみて。'],
+  ['しんどい状態。無理に話さなくていい。','ふたりともしんどい日。今日はお互いを責めないで。','ふたりともしんどい日。','あなたはしんどい状態。パートナーには余裕があります。','あなたはしんどい状態。パートナーに話しかけてもらいやすいかも。'],
+  ['あなたはまあまあ。','あなたはまあまあです。パートナーがしんどそう。今日はそっとしておいてあげて。','ふたりともまあまあの日。普通に話せる日。','ふたりとも安定しています。今日はふたり会議のチャンスかも。','ふたりとも安定しています。'],
+  ['あなたには余裕があります。パートナーがしんどそう。声をかけてみて。','あなたには余裕があります。パートナーを気にかけてあげられる日。','あなたには余裕があります。','ふたりとも余裕あり。少し深い話ができるかも。','ふたりともいい状態の日。'],
+  ['あなたは大丈夫な日。パートナーがしんどそう。受け止める側になれるかも。','あなたは大丈夫。パートナーがしんどそう。ゆっくり話を聞いてあげて。','あなたは大丈夫な日。','ふたりとも余裕のある日。','ふたりとも大丈夫な日。']
+];
+let partnerGaugeIdx=2;
+function setGauge(who,idx,el){
+  document.querySelectorAll('.gauge-steps')[0].querySelectorAll('.gauge-step').forEach(s=>s.classList.remove('active-pink'));
+  el.classList.add('active-pink');
+  document.getElementById('my-gauge-fill').style.width=gaugeWidths[idx]+'%';
+  document.getElementById('my-gauge-label').textContent=gaugeLabels[idx];
+  myGaugeIdx=idx;
+  updateGaugeHint();
+}
+function updateGaugeHint(){
+  if(myGaugeIdx<0)return;
+  const hint=gaugeHints[myGaugeIdx]?.[partnerGaugeIdx]||'';
+  const hintEl=document.getElementById('gauge-hint');
+  hintEl.style.display='block';
+  hintEl.textContent=hint;
+}
+async function loadPartnerGauge(){
+  const{data}=await db.from('records').select('content').eq('couple_id',coupleId).eq('user_id',partnerName).eq('record_type','gauge').order('created_at',{ascending:false}).limit(1);
+  if(data&&data.length>0){
+    const idx=parseInt(data[0].content)||2;
+    partnerGaugeIdx=idx;
+    document.getElementById('partner-gauge-fill').style.width=gaugeWidths[idx]+'%';
+    document.getElementById('partner-gauge-label').textContent=gaugeLabels[idx];
+    updateGaugeHint();
+  } else {
+    document.getElementById('partner-gauge-label').textContent='まだ記録なし';
+  }
+}
+async function saveGauge(){
+  if(myGaugeIdx<0){showToast('あなたの余裕度を選んでください');return;}
+  const{error}=await db.from('records').insert({couple_id:coupleId,user_id:myName,record_type:'gauge',content:String(myGaugeIdx),chips:gaugeLabels[myGaugeIdx],date:today()});
+  if(error){showToast('エラー: '+error.message);return;}
+  await db.from('messages').insert({couple_id:coupleId,from_user:myName,to_user:partnerName,type:'partner',content:JSON.stringify({chips:['余裕度を更新しました'],memo:`今日の余裕度：${gaugeLabels[myGaugeIdx]}`}),is_read:false});
+  showToast('記録してパートナーに届けました');
+}
+
+// MONEY
+async function loadMoneyList(){
+  const{data}=await db.from('records').select('*').eq('couple_id',coupleId).eq('record_type','money').order('date',{ascending:false}).limit(50);
+  if(!data||data.length===0){document.getElementById('money-list').innerHTML='<div style="color:var(--text-muted);font-size:13px;padding:8px 0">まだ記録がありません</div>';return;}
+  const chipColor={'保険':'background:#EAF4F0;color:#5A8878','自費':'background:#FBEDF0;color:#B07088','助成金':'background:#EAF0F8;color:#607898'};
+  const amtColor={'助成金':'color:#5A8878','保険':'color:#4A3A38','自費':'color:#B07088'};
+  // 月ごとにグループ化
+  const byMonth={};
+  data.forEach(r=>{
+    const m=r.date?r.date.substring(0,7):'不明';
+    if(!byMonth[m])byMonth[m]=[];
+    byMonth[m].push(r);
+  });
+  const months=Object.keys(byMonth).sort((a,b)=>b.localeCompare(a));
+  // 最新月は展開、それ以外は折り畳み
+  let html='';
+  months.forEach((m,mi)=>{
+    const recs=byMonth[m];
+    const [y,mo]=m.split('-');
+    const label=y+'年'+parseInt(mo)+'月';
+    const total=recs.reduce((s,r)=>s+(r.chips==='助成金'?0:parseInt((r.content.match(/[¥￥]([\d,]+)/)||[])[1]?.replace(/,/g,'')||0)),0);
+    const subsidy=recs.reduce((s,r)=>s+(r.chips==='助成金'?parseInt((r.content.match(/[¥￥]([\d,]+)/)||[])[1]?.replace(/,/g,'')||0):0),0);
+    const isOpen=mi===0;
+    html+=`<div style="margin-bottom:10px">
+      <div onclick="toggleMonthMoney(this)" style="display:flex;justify-content:space-between;align-items:center;padding:6px 0;cursor:pointer;border-bottom:0.5px solid var(--border)">
+        <span style="font-size:12px;font-weight:500;color:var(--text)">${label}</span>
+        <div style="display:flex;align-items:center;gap:8px">
+          <span style="font-size:11px;color:#B07088">-¥${total.toLocaleString()}</span>
+          ${subsidy>0?`<span style="font-size:11px;color:#5A8878">+¥${subsidy.toLocaleString()}</span>`:''}
+          <span style="font-size:11px;color:var(--text-muted)">${isOpen?'▲':'▼'}</span>
+        </div>
+      </div>
+      <div class="money-month-body" style="display:${isOpen?'block':'none'}">
+        ${recs.map(r=>{
+          const cc=chipColor[r.chips]||'background:#F0EDE8;color:#8A8580';
+          const ac=amtColor[r.chips]||'';
+          const amtMatch=r.content.match(/[¥￥]([\d,]+)/);
+          const label2=amtMatch?r.content.replace(/\s*[¥￥][\d,]+/,'').trim():r.content;
+          const amt=amtMatch?'¥'+amtMatch[1]:'';
+          return `<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:0.5px solid #F5F0EA">
+            <div>
+              <span style="font-size:12px;color:var(--text)">${label2}</span>
+              <span style="font-size:10px;padding:1px 7px;border-radius:6px;margin-left:6px;${cc}">${r.chips}</span>
+              <div style="font-size:10px;color:var(--text-muted);margin-top:2px">${r.date}</div>
+            </div>
+            <span style="font-size:13px;font-weight:500;${ac}">${r.chips==='助成金'?'+':'-'}${amt}</span>
+          </div>`;
+        }).join('')}
+      </div>
+    </div>`;
+  });
+  document.getElementById('money-list').innerHTML=html;
+}
+function toggleMonthMoney(header){
+  const body=header.nextElementSibling;
+  const isOpen=body.style.display!=='none';
+  body.style.display=isOpen?'none':'block';
+  header.querySelector('span:last-child').textContent=isOpen?'▼':'▲';
+}
+function openMoneyModal(){document.getElementById('money-modal').classList.add('open');}
+function closeMoneyModal(){document.getElementById('money-modal').classList.remove('open');}
+function selectMoneyType(el){
+  document.getElementById('money-type-chips').querySelectorAll('.chip').forEach(c=>c.classList.remove('sel'));
+  el.classList.add('sel');
+}
+async function saveMoney(){
+  const label=document.getElementById('money-label').value.trim();
+  const amount=document.getElementById('money-amount').value;
+  if(!label||!amount){showToast('内容と金額を入力してください');return;}
+  const typeEl=document.getElementById('money-type-chips').querySelector('.chip.sel');
+  if(!typeEl){showToast('種別を選んでください（保険・自費・助成金）');return;}
+  const type=typeEl.textContent.trim();
+  const moneyDate=document.getElementById('money-date').value||today();
+  const{error}=await db.from('records').insert({couple_id:coupleId,user_id:myName,record_type:'money',content:label+' ¥'+parseInt(amount).toLocaleString(),chips:type,date:moneyDate});
+  if(error){showToast('エラー: '+error.message);return;}
+  closeMoneyModal();
+  document.getElementById('money-label').value='';
+  document.getElementById('money-amount').value='';
+  document.getElementById('money-date').value='';
+  document.getElementById('money-type-chips').querySelectorAll('.chip.sel').forEach(c=>c.classList.remove('sel'));
+  showToast('記録しました');
+  loadMoneyList();loadStats();
+}
+
+// MEDICINE
+async function loadMedicines(){
+  const{data,error}=await db.from('medicines').select('*').eq('couple_id',coupleId).eq('user_id',myName);
+  if(error){
+    console.error('薬エラー:',error);
+    document.getElementById('medicine-list').innerHTML='<div style="padding:8px 0;color:var(--text-muted);font-size:13px">読み込みエラー: '+error.message+'</div>';
+    return;
+  }
+  if(!data||data.length===0){document.getElementById('medicine-list').innerHTML='<div style="padding:8px 0;color:var(--text-muted);font-size:13px">薬が登録されていません</div>';return;}
+  const tags={'飲み薬':'tag-amber','貼り薬':'tag-pink','膣錠':'tag-teal'};
+  const{data:checks}=await db.from('records').select('content').eq('couple_id',coupleId).eq('user_id',myName).eq('record_type','med_check').eq('date',today());
+  const checked=new Set(checks?checks.map(c=>c.content):[]);
+  document.getElementById('medicine-list').innerHTML=data.map(m=>`<div class="med-item"><div class="med-check ${checked.has(m.id.toString())?'checked':''}" onclick="checkMed(this,'${m.id}')">${checked.has(m.id.toString())?'✓':''}</div><div class="med-info"><div class="med-name">${m.name}</div><div class="med-time">${m.timing}${m.side_effects?' · '+m.side_effects:''}</div></div><span class="med-tag ${tags[m.medicine_type]||'tag-teal'}">${m.medicine_type}</span></div>`).join('');
+}
+async function checkMed(el,medId){
+  el.classList.toggle('checked');
+  const isChecked=el.classList.contains('checked');
+  el.textContent=isChecked?'✓':'';
+  if(isChecked){await db.from('records').insert({couple_id:coupleId,user_id:myName,record_type:'med_check',content:medId,chips:'',date:today()});showToast('チェックしました');}
+  else{await db.from('records').delete().eq('couple_id',coupleId).eq('user_id',myName).eq('record_type','med_check').eq('content',medId).eq('date',today());}
+}
+function openAddMed(){document.getElementById('med-modal').classList.add('open');}
+function closeMedModal(){document.getElementById('med-modal').classList.remove('open');}
+async function saveMedicine(){
+  const name=document.getElementById('med-name').value.trim();
+  if(!name){showToast('薬の名前を入れてください');return;}
+  const modal=document.getElementById('med-modal');
+  const typeChip=modal.querySelector('.chip-pink.sel,.chip-teal.sel,.chip-purple.sel');
+  const timeChips=Array.from(modal.querySelectorAll('.chip-gray.sel')).map(c=>c.textContent.trim());
+  const side=document.getElementById('med-side').value;
+  const{error}=await db.from('medicines').insert({couple_id:coupleId,user_id:myName,name,medicine_type:typeChip?typeChip.textContent.trim():'飲み薬',timing:timeChips.join('・')||'毎日',reminder_time:'',side_effects:side,is_active:true});
+  if(error){showToast('エラー: '+error.message);return;}
+  closeMedModal();
+  document.getElementById('med-name').value='';
+  document.getElementById('med-side').value='';
+  modal.querySelectorAll('.chip.sel').forEach(c=>c.classList.remove('sel'));
+  showToast('薬を追加しました');
+  loadMedicines();
+}
+
+// WARM
+async function sendWarm(){
+  const chips=getChips('page-warm');
+  const memo=document.getElementById('warm-memo').value;
+  if(chips.length===0&&!memo){showToast('気持ちを選んでください');return;}
+  const{error}=await db.from('messages').insert({couple_id:coupleId,from_user:myName,to_user:partnerName,type:'warm',content:JSON.stringify({chips,memo}),is_read:false});
+  if(error){showToast('エラー: '+error.message);return;}
+  await db.from('records').insert({couple_id:coupleId,user_id:myName,record_type:'warm',content:memo||chips[0]||'',chips:chips.join(','),date:today()});
+  document.getElementById('page-warm').querySelectorAll('.chip.sel').forEach(c=>c.classList.remove('sel'));
+  document.getElementById('warm-memo').value='';
+  showToast('届けました');
+  loadWarmList();
+}
+async function sendHurt(){
+  const chips=getChips('page-warm');
+  const memo=document.getElementById('hurt-memo').value;
+  if(!memo){showToast('言葉を書いてください');return;}
+  const from=chips.find(c=>c.includes('から'))||'';
+  const{error}=await db.from('messages').insert({couple_id:coupleId,from_user:myName,to_user:partnerName,type:'hurt',content:JSON.stringify({from,memo}),is_read:false});
+  if(error){showToast('エラー: '+error.message);return;}
+  await db.from('records').insert({couple_id:coupleId,user_id:myName,record_type:'hurt',content:memo,chips:from,date:today()});
+  document.getElementById('page-warm').querySelectorAll('.chip.sel').forEach(c=>c.classList.remove('sel'));
+  document.getElementById('hurt-memo').value='';
+  showToast('パートナーと一緒に受け止めます');
+  loadWarmList();
+}
+async function loadWarmList(){
+  const{data,error}=await db.from('records').select('*').eq('couple_id',coupleId).in('record_type',['warm','hurt']).order('created_at',{ascending:false}).limit(10);
+  if(error){console.error(error);return;}
+  if(!data||data.length===0){document.getElementById('warm-list').innerHTML='<div style="padding:12px;color:var(--text-muted);font-size:13px">まだ記録がありません</div>';return;}
+  document.getElementById('warm-list').innerHTML=data.map(r=>`<div class="warm-item"><span class="warm-from ${r.user_id===myName?'warm-me':'warm-partner'}">${r.user_id}</span><span class="warm-text">${r.record_type==='hurt'?'🫂 ':'🌸 '}${r.content}</span><span class="warm-date">${fmtDate(r.created_at)}</span></div>`).join('');
+}
+
+// LEARN
+function toggleLearn(card){
+  const body=card.querySelector('.learn-body');
+  const arrow=card.querySelector('.learn-arrow');
+  const isOpen=body.classList.contains('open');
+  document.querySelectorAll('.learn-body').forEach(b=>b.classList.remove('open'));
+  document.querySelectorAll('.learn-arrow').forEach(a=>a.classList.remove('open'));
+  if(!isOpen){body.classList.add('open');arrow.classList.add('open');}
+}
+
+// UTILS
+function openPrivacy(){document.getElementById('privacy-modal').classList.add('open');}
+function closePrivacy(){document.getElementById('privacy-modal').classList.remove('open');}
+function today(){
+  const d=new Date();
+  const jst=new Date(d.getTime()+9*60*60*1000);
+  return jst.toISOString().split('T')[0];
+}
+function fmtDate(iso){
+  const d=new Date(iso),now=new Date(),diff=Math.floor((now-d)/60000);
+  if(diff<1)return 'たった今';if(diff<60)return diff+'分前';
+  if(diff<1440)return Math.floor(diff/60)+'時間前';return Math.floor(diff/1440)+'日前';
+}
+function showToast(msg){
+  const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2500);
+}
+</script>
+</body>
+</html>
