@@ -313,10 +313,6 @@ textarea:focus{border-color:var(--pink);}
       <div class="section-title">今日の嬉しいこと・感謝</div>
       <div class="card">
         <div class="card-sub" style="margin-bottom:10px">パートナーへの嬉しかったことを届け合う</div>
-        <div style="margin-bottom:8px">
-          <div style="font-size:11px;color:var(--text-muted);margin-bottom:5px">日付</div>
-          <input type="date" id="happy-date" class="input-field" style="font-size:13px;padding:10px 12px">
-        </div>
         <div class="chip-row">
           <span class="chip chip-teal" onclick="toggleChip(this)">そばにいてくれた</span>
           <span class="chip chip-teal" onclick="toggleChip(this)">話を聞いてくれた</span>
@@ -738,12 +734,8 @@ window.onload=async()=>{
   const todayVal=_jst.toISOString().split('T')[0];
   const kd=document.getElementById('kiroku-date');
   const md=document.getElementById('money-date');
-  const gd=document.getElementById('good-date');
-  const hd=document.getElementById('happy-date');
   if(kd)kd.value=todayVal;
   if(md)md.value=todayVal;
-  if(gd)gd.value=todayVal;
-  if(hd)hd.value=todayVal;
   const saved=localStorage.getItem('fumi_user');
   if(saved){const u=JSON.parse(saved);myName=u.myName;partnerName=u.partnerName;coupleId=u.coupleId;showMain();}
 };
@@ -874,10 +866,9 @@ async function sendGood(){
   const chips=Array.from(document.getElementById('good-chips').querySelectorAll('.chip.sel')).map(c=>c.textContent.trim());
   const memo=document.getElementById('good-memo').value;
   if(chips.length===0&&!memo){showToast('よかったことを選んでください');return;}
-  const goodDate=document.getElementById('good-date').value||today();
   const{error:e1}=await db.from('messages').insert({couple_id:coupleId,from_user:myName,to_user:partnerName,type:'good',content:JSON.stringify({chips,memo}),is_read:false});
   if(e1){showToast('エラー: '+e1.message);return;}
-  await db.from('records').insert({couple_id:coupleId,user_id:myName,record_type:'good',content:memo||chips[0]||'',chips:chips.join(','),date:goodDate});
+  await db.from('records').insert({couple_id:coupleId,user_id:myName,record_type:'good',content:memo||chips[0]||'',chips:chips.join(','),date:today()});
   document.getElementById('good-chips').querySelectorAll('.chip.sel').forEach(c=>c.classList.remove('sel'));
   document.getElementById('good-memo').value='';
   showToast('パートナーと共有しました');
