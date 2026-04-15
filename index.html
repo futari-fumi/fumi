@@ -1149,9 +1149,8 @@ async function loadStats(){
   document.getElementById('stat-visits').textContent=visitCount;
   document.getElementById('stat-days').textContent=all?new Set(all.map(r=>r.date)).size:0;
   // 治療費：10万以上は「〇〇.〇万円」、それ未満は「〇〇〇円」
-  const fmtMoney=n=>n>=100000?(n/10000).toFixed(1)+'万':n.toLocaleString();
-  document.getElementById('stat-money').textContent=totalPay>0?fmtMoney(totalPay):'0';
-  document.getElementById('stat-subsidy').textContent=totalSub>0?fmtMoney(totalSub):'0';
+  document.getElementById('stat-money').textContent=totalPay>0?totalPay.toLocaleString():'0';
+  document.getElementById('stat-subsidy').textContent=totalSub>0?totalSub.toLocaleString():'0';
 }
 
 // CALENDAR
