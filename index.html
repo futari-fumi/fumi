@@ -230,6 +230,50 @@ textarea:focus{border-color:var(--pink);}
 .diary-memo{font-size:12px;color:var(--text-muted);line-height:1.6;margin-top:2px;}
 input[type=date]{width:100%;border:1px solid var(--border);border-radius:10px;padding:10px 12px;font-size:13px;font-family:var(--sans);background:var(--gray-light);outline:none;color:var(--text);-webkit-appearance:none;appearance:none;}
 input[type=date]:focus{border-color:var(--pink);}
+
+.post-item{background:var(--card);border-radius:18px;border:0.5px solid var(--border);margin-bottom:10px;overflow:hidden;}
+.post-head{padding:10px 14px 8px;display:flex;align-items:center;gap:8px;border-bottom:0.5px solid #F5F0EA;}
+.post-avatar{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:500;flex-shrink:0;}
+.av-me{background:#FBEDF0;color:#B07088;}
+.av-partner{background:#EAF4F0;color:#5A8878;}
+.post-who{font-size:11px;font-weight:500;color:var(--text);flex:1;}
+.post-time{font-size:10px;color:var(--text-muted);}
+.post-type{font-size:9px;padding:2px 7px;border-radius:5px;margin-left:4px;}
+.pt-kimochi{background:#FBEDF0;color:#B07088;}
+.pt-good{background:#EAF4F0;color:#5A8878;}
+.pt-warm{background:#FBF3E8;color:#A07848;}
+.pt-sos{background:#FBEDF0;color:#B07088;}
+.post-body{padding:10px 14px;}
+.post-text{font-size:12px;color:var(--text);line-height:1.7;}
+.post-chips-row{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:6px;}
+.post-chip{font-size:10px;padding:2px 8px;border-radius:8px;}
+.pc-pink{background:#FBEDF0;color:#B07088;}
+.pc-teal{background:#EAF4F0;color:#5A8878;}
+.post-footer{padding:5px 12px 8px;border-top:0.5px solid #F5F0EA;display:flex;align-items:center;gap:4px;}
+.reply-icon-btn{display:flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:50%;border:none;background:transparent;cursor:pointer;color:var(--text-muted);transition:background .15s;}
+.reply-icon-btn:hover{background:#F5F0EA;}
+.reply-count{font-size:11px;color:var(--text-muted);}
+.reply-panel{background:#FDFAF7;border-top:0.5px solid var(--border);padding:10px 14px;display:none;}
+.reply-panel.open{display:block;}
+.reply-hint{font-size:10px;color:var(--text-muted);margin-bottom:8px;letter-spacing:.03em;}
+.reply-opts{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:8px;}
+.reply-opt{font-size:11px;padding:5px 11px;border-radius:16px;border:0.5px solid #C0D8D0;background:#EAF4F0;color:#5A8878;cursor:pointer;font-family:var(--sans);transition:all .15s;}
+.reply-opt:hover,.reply-opt.sel{background:#7BBFB5;color:#fff;border-color:#4A9990;}
+.reply-textarea{width:100%;border:0.5px solid var(--border);border-radius:10px;padding:8px 10px;font-size:11px;font-family:var(--sans);background:#fff;resize:none;outline:none;color:var(--text);margin-bottom:6px;}
+.reply-textarea:focus{border-color:#7BBFB5;}
+.reply-send{width:100%;padding:8px;border-radius:10px;background:var(--teal-dark);color:#fff;border:none;font-size:12px;font-family:var(--sans);font-weight:500;cursor:pointer;}
+.sent-mark{font-size:10px;color:#5A8878;padding:3px 8px;background:#EAF4F0;border-radius:8px;}
+.fab-btn{position:fixed;bottom:80px;right:20px;width:50px;height:50px;border-radius:50%;background:var(--pink-dark);color:#fff;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 16px rgba(176,112,112,.35);z-index:50;font-size:24px;font-weight:300;}
+.post-modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:200;display:none;align-items:flex-end;}
+.post-modal-bg.open{display:flex;}
+.post-modal{background:var(--bg);border-radius:24px 24px 0 0;padding:20px 18px 40px;width:100%;max-height:85vh;overflow-y:auto;}
+.post-modal-title{font-size:14px;font-weight:500;color:var(--text);margin-bottom:14px;}
+.post-type-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.post-type-item{background:var(--card);border-radius:14px;padding:14px 12px;text-align:center;cursor:pointer;border:0.5px solid var(--border);transition:all .15s;}
+.post-type-item:hover{border-color:var(--teal);}
+.post-type-icon{font-size:22px;margin-bottom:6px;}
+.post-type-label{font-size:11px;color:var(--text);font-weight:500;}
+.post-type-item.sos-item{background:#FBEDF0;border-color:#E0C0CC;}
 </style>
 </head>
 <body>
@@ -657,6 +701,42 @@ input[type=date]:focus{border-color:var(--pink);}
 <!-- MODALS -->
 
 
+<button class="fab-btn" id="fab-btn" onclick="openPostModal()">
+  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+</button>
+
+<div class="post-modal-bg" id="post-modal-bg">
+  <div class="post-modal">
+    <div class="post-modal-title">何を届けますか？</div>
+    <div class="post-type-grid">
+      <div class="post-type-item" onclick="openPostType('good')">
+        <div class="post-type-icon">🌱</div>
+        <div class="post-type-label">よかったこと</div>
+      </div>
+      <div class="post-type-item" onclick="openPostType('kimochi')">
+        <div class="post-type-icon">💭</div>
+        <div class="post-type-label">気持ちを届ける</div>
+      </div>
+      <div class="post-type-item" onclick="openPostType('happy')">
+        <div class="post-type-icon">🌸</div>
+        <div class="post-type-label">嬉しかったこと</div>
+      </div>
+      <div class="post-type-item" onclick="openPostType('kiroku')">
+        <div class="post-type-icon">🏥</div>
+        <div class="post-type-label">治療記録</div>
+      </div>
+      <div class="post-type-item" onclick="openPostType('warm')">
+        <div class="post-type-icon">💝</div>
+        <div class="post-type-label">ここが好き</div>
+      </div>
+      <div class="post-type-item sos-item" onclick="closePostModal();sendSOS()">
+        <div class="post-type-icon">📞</div>
+        <div class="post-type-label">SOS</div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div class="modal-bg" id="med-modal">
   <div class="modal">
     <button class="close-btn" onclick="closeMedModal()">×</button>
@@ -763,7 +843,7 @@ function showMain(){
   document.getElementById('header-user').textContent=myName;
   document.getElementById('partner-gauge-who').textContent=partnerName;
   updateGreeting();
-  loadInbox();loadGoodHistory();loadPartnerMessages();loadMedicines();loadTimeline();loadWarmList();loadMoneyList();loadCalendar();loadPartnerGauge();loadStats();checkPartnerStatus();loadPastWords();
+  loadTimelineFeed();loadPartnerMessages();loadMedicines();loadTimeline();loadWarmList();loadMoneyList();loadCalendar();loadPartnerGauge();loadStats();checkPartnerStatus();loadPastWords();
   setInterval(loadInbox,15000);
   setInterval(checkPartnerStatus,30000);
   setInterval(loadPartnerGauge,30000);
@@ -795,7 +875,9 @@ function showPage(name,btn){
   btn.classList.add('active');
   const activeSvg=btn.querySelector('svg');
   if(activeSvg)activeSvg.setAttribute('stroke','#B07070');
-  if(name==='home'){loadInbox();loadGoodHistory();}
+  if(name==='home'){loadTimelineFeed();}
+  const fab=document.getElementById('fab-btn');
+  if(fab)fab.style.display=name==='home'?'flex':'none';
   if(name==='partner'){loadPartnerMessages();loadPastWords();}
   if(name==='kiroku'){loadMedicines();loadTimeline();loadCalendar();loadMoneyList();loadPartnerGauge();loadStats();}
   if(name==='warm')loadWarmList();
@@ -884,6 +966,96 @@ async function loadGoodHistory(){
 }
 
 // INBOX
+async function loadTimelineFeed(){
+  const{data,error}=await db.from('messages').select('*').eq('couple_id',coupleId).not('type','eq','kiroku').order('created_at',{ascending:false}).limit(30);
+  if(error){console.error(error);return;}
+  const el=document.getElementById('timeline-feed');
+  if(!data||data.length===0){el.innerHTML='<div style="text-align:center;padding:40px 20px;color:var(--text-muted);font-size:13px">まだ記録がありません<br><span style="font-size:11px">＋ボタンから最初の記録を届けてみて</span></div>';return;}
+  const typeLabels={good:'よかったこと',kimochi:'気持ち',warm:'嬉しかったこと',partner:'返事',hurt:'傷ついた言葉',sos:'SOS',meeting:'ふたり会議',recover:'フォロー',i_message:'気持ち'};
+  const typeClass={good:'pt-good',kimochi:'pt-kimochi',warm:'pt-warm',partner:'pt-teal',hurt:'pt-warm',sos:'pt-kimochi'};
+  const replyOpts={
+    kimochi:['読んだよ、そばにいる','ゆっくり休んでね','話したいときは聞くよ','黙って隣にいるよ','うまく言えないけど、大切にしてる'],
+    good:['よかったね','ありがとう','一緒に喜んでる','もっと聞かせて','そういう話、好きだよ'],
+    warm:['ありがとう','嬉しい','私もだよ','大切にする'],
+    default:['読んだよ','ありがとう','一緒にいるよ','ゆっくり休んでね']
+  };
+  el.innerHTML=data.map((m,i)=>{
+    let text=m.content,chips=[];
+    try{const p=JSON.parse(m.content);chips=p.chips||[];text=p.memo||'';}catch(e){}
+    const isMe=m.from_user===myName;
+    const avatarClass=isMe?'av-me':'av-partner';
+    const initial=m.from_user?m.from_user[0]:'?';
+    const typeLabel=typeLabels[m.type]||m.type;
+    const typeCls=typeClass[m.type]||'pt-good';
+    const opts=replyOpts[m.type]||replyOpts.default;
+    const optsHtml=opts.map(o=>`<button class="reply-opt" onclick="selReplyOpt(this)">${o}</button>`).join('');
+    const chipsHtml=chips.length>0?`<div class="post-chips-row">${chips.map(c=>`<span class="post-chip pc-pink">${c}</span>`).join('')}</div>`:'';
+    const showReply=!isMe;
+    return `<div class="post-item" id="post-${m.id}">
+      <div class="post-head">
+        <div class="post-avatar ${avatarClass}">${initial}</div>
+        <div class="post-who">${m.from_user} <span class="post-type ${typeCls}">${typeLabel}</span></div>
+        <div class="post-time">${fmtDate(m.created_at)}</div>
+      </div>
+      <div class="post-body">
+        ${chipsHtml}
+        ${text?`<div class="post-text">${text}</div>`:''}
+      </div>
+      <div class="post-footer">
+        ${showReply?`<button class="reply-icon-btn" onclick="toggleReplyPanel('rp-${m.id}','${m.type}')" title="返事する">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+        </button>`:''}
+      </div>
+      ${showReply?`<div class="reply-panel" id="rp-${m.id}">
+        <div class="reply-hint">読んだだけでもOK · 気が向いたら選んで</div>
+        <div class="reply-opts">${optsHtml}</div>
+        <textarea class="reply-textarea" id="rt-${m.id}" rows="2" placeholder="一言添える（省略OK）"></textarea>
+        <button class="reply-send" onclick="sendReplyToPost('${m.id}','rp-${m.id}')">届ける</button>
+      </div>`:''}
+    </div>`;
+  }).join('');
+}
+
+function toggleReplyPanel(panelId,type){
+  const panel=document.getElementById(panelId);
+  const isOpen=panel.classList.contains('open');
+  document.querySelectorAll('.reply-panel').forEach(p=>p.classList.remove('open'));
+  if(!isOpen)panel.classList.add('open');
+}
+
+function selReplyOpt(el){
+  el.closest('.reply-opts').querySelectorAll('.reply-opt').forEach(r=>r.classList.remove('sel'));
+  el.classList.add('sel');
+}
+
+async function sendReplyToPost(msgId,panelId){
+  const panel=document.getElementById(panelId);
+  const sel=panel.querySelector('.reply-opt.sel');
+  const text=document.getElementById('rt-'+msgId)?.value||'';
+  if(!sel&&!text){showToast('返事を選ぶか、一言書いてください');return;}
+  const content=JSON.stringify({chips:sel?[sel.textContent]:[],memo:text});
+  const{error}=await db.from('messages').insert({couple_id:coupleId,from_user:myName,to_user:partnerName,type:'partner',content,is_read:false});
+  if(error){showToast('エラー: '+error.message);return;}
+  const footer=document.getElementById('post-'+msgId)?.querySelector('.post-footer');
+  if(footer)footer.innerHTML='<span class="sent-mark">✓ 届けました</span>';
+  panel.classList.remove('open');
+  showToast('届けました');
+}
+
+function openPostModal(){
+  document.getElementById('post-modal-bg').classList.add('open');
+}
+function closePostModal(){
+  document.getElementById('post-modal-bg').classList.remove('open');
+}
+function openPostType(type){
+  closePostModal();
+  const pageMap={good:'home',kimochi:'kimochi',happy:'kimochi',kiroku:'kiroku',warm:'warm'};
+  const page=pageMap[type]||'home';
+  const navBtn=document.querySelector(`.nav-btn[onclick*="'${page}'"]`);
+  if(navBtn)showPage(page,navBtn);
+}
+
 async function loadInbox(){
   const{data,error}=await db.from('messages').select('*').eq('couple_id',coupleId).eq('to_user',myName).order('created_at',{ascending:false}).limit(10);
   if(error){console.error(error);return;}
@@ -1401,6 +1573,10 @@ function toggleLearn(card){
 // UTILS
 function openPrivacy(){document.getElementById('privacy-modal').classList.add('open');}
 function closePrivacy(){document.getElementById('privacy-modal').classList.remove('open');}
+document.addEventListener('click',function(e){
+  const bg=document.getElementById('post-modal-bg');
+  if(bg&&e.target===bg)closePostModal();
+});
 function today(){
   const d=new Date();
   const jst=new Date(d.getTime()+9*60*60*1000);
