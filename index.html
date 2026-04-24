@@ -158,7 +158,8 @@ textarea:focus{border-color:var(--pink);}
 .cal-day.today{background:var(--pink-light);color:var(--pink-dark);font-weight:500;}
 .cal-dot{display:flex;justify-content:center;gap:2px;margin-top:2px;}
 .dot{width:4px;height:4px;border-radius:50%;}
-.dot-teal{background:var(--teal);}
+.dot-teal{background:#5A9980;}
+.dot-hard{background:#C07070;}
 .dot-pink{background:var(--pink-dark);}
 .dot-amber{background:var(--amber);}
 .money-item{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border);}
@@ -429,8 +430,7 @@ input[type=date]:focus{border-color:var(--pink);}
         </div>
       </div>
 
-      <div class="section-title">パートナーへの過去の言葉</div>
-      <div id="past-words" style="font-size:12px;color:var(--text-muted);padding:8px 0;line-height:1.8"></div>
+
 
       <textarea id="kimochi-memo" placeholder="言葉にならなくていい。断片でも大丈夫。" rows="3"></textarea>
       <button class="btn btn-pink" onclick="sendKimochi()">パートナーにそっと届ける</button>
@@ -594,32 +594,11 @@ input[type=date]:focus{border-color:var(--pink);}
         <div class="cal-grid" id="cal-body"></div>
         <div style="display:flex;gap:12px;margin-top:8px;flex-wrap:wrap">
           <div style="display:flex;align-items:center;gap:4px"><div class="dot dot-teal"></div><span style="font-size:10px;color:var(--text-muted)">通院</span></div>
-          <div style="display:flex;align-items:center;gap:4px"><div class="dot dot-pink"></div><span style="font-size:10px;color:var(--text-muted)">しんどかった日</span></div>
-          <div style="display:flex;align-items:center;gap:4px"><div class="dot dot-amber"></div><span style="font-size:10px;color:var(--text-muted)">治療記録</span></div>
+          <div style="display:flex;align-items:center;gap:4px"><div class="dot dot-hard"></div><span style="font-size:10px;color:var(--text-muted)">しんどかった日</span></div>
         </div>
       </div>
 
-      <div class="section-title">治療記録（過去の日付も入力できます）</div>
-      <div class="card">
-        <div style="margin-bottom:10px">
-          <div style="font-size:11px;color:var(--text-muted);margin-bottom:6px">日付（過去の記録も入れられます）</div>
-          <input type="date" id="kiroku-date" class="input-field" style="font-size:13px;padding:10px 12px">
-        </div>
-        <div class="chip-row">
-          <span class="chip chip-teal" onclick="toggleChip(this)">通院した</span>
-          <span class="chip chip-teal" onclick="toggleChip(this)">採血・検査</span>
-          <span class="chip chip-teal" onclick="toggleChip(this)">移植した</span>
-          <span class="chip chip-teal" onclick="toggleChip(this)">採卵だった</span>
-          <span class="chip chip-pink" onclick="toggleChip(this)">判定が出た</span>
-          <span class="chip chip-pink" onclick="toggleChip(this)">陰性だった</span>
-          <span class="chip chip-teal" onclick="toggleChip(this)">陽性だった</span>
-          <span class="chip chip-amber" onclick="toggleChip(this)">身体がしんどかった</span>
-          <span class="chip chip-amber" onclick="toggleChip(this)">人工授精</span>
-          <span class="chip chip-amber" onclick="toggleChip(this)">タイミング法</span>
-        </div>
-        <textarea id="kiroku-memo" placeholder="先生に言われたこと、気になっていること" rows="2"></textarea>
-        <button class="btn btn-teal" onclick="saveKiroku()">記録してパートナーに届ける</button>
-      </div>
+
 
       <div class="section-title">お金の記録</div>
       <div class="card">
@@ -679,17 +658,13 @@ input[type=date]:focus{border-color:var(--pink);}
       <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="#B07070" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
       <span class="nav-label">ホーム</span>
     </button>
-    <button class="nav-btn" onclick="showPage('kimochi',this)">
-      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="#C0B8B0" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
-      <span class="nav-label">気持ち</span>
+    <button class="nav-btn" onclick="showPage('kiroku',this)">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="#C0B8B0" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+      <span class="nav-label">記録</span>
     </button>
     <button class="nav-btn" onclick="showPage('partner',this)">
       <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="#C0B8B0" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
       <span class="nav-label">ふたり</span>
-    </button>
-    <button class="nav-btn" onclick="showPage('kiroku',this)">
-      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="#C0B8B0" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-      <span class="nav-label">記録</span>
     </button>
     <button class="nav-btn" onclick="showPage('warm',this)">
       <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="#C0B8B0" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
@@ -709,25 +684,21 @@ input[type=date]:focus{border-color:var(--pink);}
   <div class="post-modal">
     <div class="post-modal-title">何を届けますか？</div>
     <div class="post-type-grid">
-      <div class="post-type-item" onclick="openPostType('good')">
+      <div class="post-type-item" onclick="openInputSheet('good')">
         <div class="post-type-icon">🌱</div>
         <div class="post-type-label">よかったこと</div>
       </div>
-      <div class="post-type-item" onclick="openPostType('kimochi')">
+      <div class="post-type-item" onclick="openInputSheet('kimochi')">
         <div class="post-type-icon">💭</div>
         <div class="post-type-label">気持ちを届ける</div>
       </div>
-      <div class="post-type-item" onclick="openPostType('happy')">
+      <div class="post-type-item" onclick="openInputSheet('happy')">
         <div class="post-type-icon">🌸</div>
         <div class="post-type-label">嬉しかったこと</div>
       </div>
-      <div class="post-type-item" onclick="openPostType('kiroku')">
+      <div class="post-type-item" onclick="openInputSheet('kiroku')">
         <div class="post-type-icon">🏥</div>
         <div class="post-type-label">治療記録</div>
-      </div>
-      <div class="post-type-item" onclick="openPostType('warm')">
-        <div class="post-type-icon">💝</div>
-        <div class="post-type-label">ここが好き</div>
       </div>
       <div class="post-type-item sos-item" onclick="closePostModal();sendSOS()">
         <div class="post-type-icon">📞</div>
@@ -772,6 +743,13 @@ input[type=date]:focus{border-color:var(--pink);}
       <span class="chip chip-amber" onclick="selectMoneyType(this)">助成金</span>
     </div>
     <button class="btn btn-amber" onclick="saveMoney()">追加する</button>
+  </div>
+</div>
+
+<div class="modal-bg" id="input-sheet-bg">
+  <div class="modal" id="input-sheet-content" style="max-height:90vh;overflow-y:auto;">
+    <button class="close-btn" onclick="closeInputSheet()">×</button>
+    <div id="input-sheet-body"></div>
   </div>
 </div>
 
@@ -876,8 +854,11 @@ function showPage(name,btn){
   const activeSvg=btn.querySelector('svg');
   if(activeSvg)activeSvg.setAttribute('stroke','#B07070');
   if(name==='home'){loadTimelineFeed();}
+  if(name==='kiroku'){loadMedicines();loadTimeline();loadCalendar();loadMoneyList();loadPartnerGauge();loadStats();}
+  if(name==='partner'){loadPartnerMessages();}
+  if(name==='warm'){loadWarmList();}
   const fab=document.getElementById('fab-btn');
-  if(fab)fab.style.display=name==='home'?'flex':'none';
+  if(fab)fab.style.display='flex';
   if(name==='partner'){loadPartnerMessages();loadPastWords();}
   if(name==='kiroku'){loadMedicines();loadTimeline();loadCalendar();loadMoneyList();loadPartnerGauge();loadStats();}
   if(name==='warm')loadWarmList();
@@ -967,7 +948,7 @@ async function loadGoodHistory(){
 
 // INBOX
 async function loadTimelineFeed(){
-  const{data,error}=await db.from('messages').select('*').eq('couple_id',coupleId).not('type','eq','kiroku').order('created_at',{ascending:false}).limit(30);
+  const{data,error}=await db.from('messages').select('*').eq('couple_id',coupleId).not('type','in','("kiroku","sos")').order('created_at',{ascending:false}).limit(30);
   if(error){console.error(error);return;}
   const el=document.getElementById('timeline-feed');
   if(!data||data.length===0){el.innerHTML='<div style="text-align:center;padding:40px 20px;color:var(--text-muted);font-size:13px">まだ記録がありません<br><span style="font-size:11px">＋ボタンから最初の記録を届けてみて</span></div>';return;}
@@ -1048,13 +1029,7 @@ function openPostModal(){
 function closePostModal(){
   document.getElementById('post-modal-bg').classList.remove('open');
 }
-function openPostType(type){
-  closePostModal();
-  const pageMap={good:'home',kimochi:'kimochi',happy:'kimochi',kiroku:'kiroku',warm:'warm'};
-  const page=pageMap[type]||'home';
-  const navBtn=document.querySelector(`.nav-btn[onclick*="'${page}'"]`);
-  if(navBtn)showPage(page,navBtn);
-}
+
 
 async function loadInbox(){
   const{data,error}=await db.from('messages').select('*').eq('couple_id',coupleId).eq('to_user',myName).order('created_at',{ascending:false}).limit(10);
@@ -1347,10 +1322,9 @@ function renderCalendar(){
   for(let d=1;d<=last;d++){
     const ds=calYear+'-'+(String(calMonth+1).padStart(2,'0'))+'-'+(String(d).padStart(2,'0'));
     const recs=calRecords.filter(r=>r.date===ds);
-    const dots=recs.map(r=>{
-      const cls=r.record_type==='visit'?'dot-teal':r.record_type==='kimochi'?'dot-pink':'dot-amber';
-      return `<div class="dot ${cls}"></div>`;
-    }).slice(0,3).join('');
+    const visitDot=recs.some(r=>r.record_type==='visit'||(r.record_type==='kiroku'&&r.chips&&r.chips.includes('通院した')))?'<div class="dot dot-teal"></div>':'';
+    const hardDot=recs.some(r=>['kimochi','kimochi_private'].includes(r.record_type)&&r.chips&&(r.chips.includes('しんどい')||r.chips.includes('涙')||r.chips.includes('消えて')||r.chips.includes('喪失')))?'<div class="dot dot-hard"></div>':'';
+    const dots=visitDot+hardDot;
     html+=`<div class="cal-day ${ds===todayStr?'today':''}">${d}<div class="cal-dot">${dots}</div></div>`;
   }
   document.getElementById('cal-body').innerHTML=html;
@@ -1571,6 +1545,133 @@ function toggleLearn(card){
 }
 
 // UTILS
+function openInputSheet(type){
+  closePostModal();
+  const todayVal=today();
+  const sheets={
+    good:`<div style="font-size:16px;font-weight:500;margin-bottom:4px">よかったこと</div>
+      <div style="font-size:12px;color:var(--text-muted);margin-bottom:14px">どんな小さなことでも大丈夫</div>
+      <div class="chip-row" id="s-good-chips">
+        <span class="chip chip-teal" onclick="toggleChip(this)">少し笑えた</span>
+        <span class="chip chip-teal" onclick="toggleChip(this)">おいしいものを食べた</span>
+        <span class="chip chip-teal" onclick="toggleChip(this)">よく眠れた</span>
+        <span class="chip chip-teal" onclick="toggleChip(this)">好きな音楽を聴いた</span>
+        <span class="chip chip-teal" onclick="toggleChip(this)">ゆっくりできた</span>
+        <span class="chip chip-teal" onclick="toggleChip(this)">パートナーと話せた</span>
+      </div>
+      <textarea id="s-good-memo" placeholder="ひと言でいい。「コーヒーがおいしかった」でも十分。" rows="3" style="width:100%;border:1px solid var(--border);border-radius:10px;padding:12px;font-size:13px;font-family:var(--sans);background:var(--gray-light);resize:none;outline:none;margin-top:8px"></textarea>
+      <button class="btn btn-teal" onclick="submitGoodFromSheet()" style="margin-top:8px">パートナーと共有する</button>`,
+
+    kimochi:`<div style="font-size:16px;font-weight:500;margin-bottom:4px">気持ちを届ける</div>
+      <div style="font-size:12px;color:var(--text-muted);margin-bottom:14px">言葉にならなくていい。断片でも大丈夫。</div>
+      <div style="font-size:11px;color:var(--text-muted);margin-bottom:8px">身体のこと</div>
+      <div class="chip-row">
+        <span class="chip chip-pink" onclick="toggleChip(this)">身体がしんどい</span>
+        <span class="chip chip-pink" onclick="toggleChip(this)">テープが痒い</span>
+        <span class="chip chip-pink" onclick="toggleChip(this)">頭痛がひどい</span>
+        <span class="chip chip-pink" onclick="toggleChip(this)">処置がつらかった</span>
+      </div>
+      <div style="font-size:11px;color:var(--text-muted);margin:10px 0 8px">気持ちのこと</div>
+      <div class="chip-row">
+        <span class="chip chip-pink" onclick="toggleChip(this)">涙が出た</span>
+        <span class="chip chip-pink" onclick="toggleChip(this)">自分を責めてしまった</span>
+        <span class="chip chip-pink" onclick="toggleChip(this)">誰かの妊娠がつらかった</span>
+        <span class="chip chip-pink" onclick="toggleChip(this)">喪失感がある</span>
+        <span class="chip chip-pink" onclick="toggleChip(this)">消えてしまいたかった</span>
+      </div>
+      <div style="font-size:11px;color:var(--text-muted);margin:10px 0 8px">今の状態</div>
+      <div class="chip-row">
+        <span class="chip chip-gray" onclick="toggleChip(this)">ひとりにしてほしい</span>
+        <span class="chip chip-gray" onclick="toggleChip(this)">そばにいてほしい</span>
+        <span class="chip chip-teal" onclick="toggleChip(this)">今日は大丈夫</span>
+      </div>
+      <textarea id="s-kimochi-memo" placeholder="言葉にならなくていい。断片でも大丈夫。" rows="3" style="width:100%;border:1px solid var(--border);border-radius:10px;padding:12px;font-size:13px;font-family:var(--sans);background:var(--gray-light);resize:none;outline:none;margin-top:8px"></textarea>
+      <button class="btn btn-pink" onclick="submitKimochiFromSheet()" style="margin-top:8px">パートナーにそっと届ける</button>
+      <button class="btn btn-outline" onclick="submitKimochiPrivateFromSheet()" style="margin-top:4px">自分だけの記録にする</button>`,
+
+    happy:`<div style="font-size:16px;font-weight:500;margin-bottom:4px">嬉しかったこと・感謝</div>
+      <div style="font-size:12px;color:var(--text-muted);margin-bottom:14px">パートナーへの嬉しかったことを届ける</div>
+      <div class="chip-row">
+        <span class="chip chip-teal" onclick="toggleChip(this)">そばにいてくれた</span>
+        <span class="chip chip-teal" onclick="toggleChip(this)">話を聞いてくれた</span>
+        <span class="chip chip-teal" onclick="toggleChip(this)">ご飯を買ってきてくれた</span>
+        <span class="chip chip-teal" onclick="toggleChip(this)">家事をやってくれた</span>
+        <span class="chip chip-teal" onclick="toggleChip(this)">お疲れさまと言ってくれた</span>
+      </div>
+      <textarea id="s-happy-memo" placeholder="「あの一言が嬉しかった」「これをしてくれてありがとう」" rows="3" style="width:100%;border:1px solid var(--border);border-radius:10px;padding:12px;font-size:13px;font-family:var(--sans);background:var(--gray-light);resize:none;outline:none;margin-top:8px"></textarea>
+      <button class="btn btn-teal" onclick="submitHappyFromSheet()" style="margin-top:8px">届ける</button>`,
+
+    kiroku:`<div style="font-size:16px;font-weight:500;margin-bottom:4px">治療記録</div>
+      <div style="font-size:12px;color:var(--text-muted);margin-bottom:14px">過去の日付も入れられます</div>
+      <div style="margin-bottom:10px">
+        <div style="font-size:11px;color:var(--text-muted);margin-bottom:6px">日付</div>
+        <input type="date" id="s-kiroku-date" value="${todayVal}" style="width:100%;border:1px solid var(--border);border-radius:10px;padding:10px 12px;font-size:13px;font-family:var(--sans);background:var(--gray-light);outline:none;">
+      </div>
+      <div class="chip-row">
+        <span class="chip chip-teal" onclick="toggleChip(this)">通院した</span>
+        <span class="chip chip-teal" onclick="toggleChip(this)">採血・検査</span>
+        <span class="chip chip-teal" onclick="toggleChip(this)">移植した</span>
+        <span class="chip chip-teal" onclick="toggleChip(this)">採卵だった</span>
+        <span class="chip chip-pink" onclick="toggleChip(this)">判定が出た</span>
+        <span class="chip chip-pink" onclick="toggleChip(this)">陰性だった</span>
+        <span class="chip chip-teal" onclick="toggleChip(this)">陽性だった</span>
+        <span class="chip chip-amber" onclick="toggleChip(this)">身体がしんどかった</span>
+        <span class="chip chip-amber" onclick="toggleChip(this)">人工授精</span>
+        <span class="chip chip-amber" onclick="toggleChip(this)">タイミング法</span>
+      </div>
+      <textarea id="s-kiroku-memo" placeholder="先生に言われたこと、気になっていること" rows="3" style="width:100%;border:1px solid var(--border);border-radius:10px;padding:12px;font-size:13px;font-family:var(--sans);background:var(--gray-light);resize:none;outline:none;margin-top:8px"></textarea>
+      <button class="btn btn-teal" onclick="submitKirokuFromSheet()" style="margin-top:8px">記録してパートナーに届ける</button>`
+  };
+  document.getElementById('input-sheet-body').innerHTML=sheets[type]||'';
+  document.getElementById('input-sheet-bg').classList.add('open');
+}
+function closeInputSheet(){document.getElementById('input-sheet-bg').classList.remove('open');}
+
+async function submitGoodFromSheet(){
+  const chips=Array.from(document.getElementById('s-good-chips').querySelectorAll('.chip.sel')).map(c=>c.textContent.trim());
+  const memo=document.getElementById('s-good-memo').value;
+  if(chips.length===0&&!memo){showToast('よかったことを選んでください');return;}
+  await db.from('messages').insert({couple_id:coupleId,from_user:myName,to_user:partnerName,type:'good',content:JSON.stringify({chips,memo}),is_read:false});
+  await db.from('records').insert({couple_id:coupleId,user_id:myName,record_type:'good',content:memo||chips[0]||'',chips:chips.join(','),date:today()});
+  closeInputSheet();showToast('パートナーと共有しました');loadTimelineFeed();
+}
+async function submitKimochiFromSheet(){
+  const chips=Array.from(document.getElementById('input-sheet-content').querySelectorAll('.chip.sel')).map(c=>c.textContent.trim());
+  const memo=document.getElementById('s-kimochi-memo').value;
+  if(chips.length===0&&!memo){showToast('気持ちを選んでください');return;}
+  if(document.getElementById('priv-kimochi').checked){
+    await db.from('messages').insert({couple_id:coupleId,from_user:myName,to_user:partnerName,type:'kimochi',content:JSON.stringify({chips,memo}),is_read:false});
+  }
+  await db.from('records').insert({couple_id:coupleId,user_id:myName,record_type:'kimochi',content:memo,chips:chips.join(','),date:today()});
+  closeInputSheet();showToast('届けました');loadTimelineFeed();
+}
+async function submitKimochiPrivateFromSheet(){
+  const chips=Array.from(document.getElementById('input-sheet-content').querySelectorAll('.chip.sel')).map(c=>c.textContent.trim());
+  const memo=document.getElementById('s-kimochi-memo').value;
+  await db.from('records').insert({couple_id:coupleId,user_id:myName,record_type:'kimochi_private',content:memo,chips:chips.join(','),date:today()});
+  closeInputSheet();showToast('自分の記録に保存しました');
+}
+async function submitHappyFromSheet(){
+  const chips=Array.from(document.getElementById('input-sheet-content').querySelectorAll('.chip.sel')).map(c=>c.textContent.trim());
+  const memo=document.getElementById('s-happy-memo').value;
+  if(chips.length===0&&!memo){showToast('嬉しかったことを選んでください');return;}
+  await db.from('messages').insert({couple_id:coupleId,from_user:myName,to_user:partnerName,type:'warm',content:JSON.stringify({chips,memo}),is_read:false});
+  await db.from('records').insert({couple_id:coupleId,user_id:myName,record_type:'warm',content:memo||chips[0]||'',chips:chips.join(','),date:today()});
+  closeInputSheet();showToast('届けました');loadTimelineFeed();
+}
+async function submitKirokuFromSheet(){
+  const chips=Array.from(document.getElementById('input-sheet-content').querySelectorAll('.chip.sel')).map(c=>c.textContent.trim());
+  const memo=document.getElementById('s-kiroku-memo').value;
+  const kirokuDate=document.getElementById('s-kiroku-date').value||today();
+  if(chips.length===0&&!memo){showToast('記録内容を選んでください');return;}
+  const isVisit=chips.includes('通院した');
+  await db.from('records').insert({couple_id:coupleId,user_id:myName,record_type:isVisit?'visit':'kiroku',content:memo,chips:chips.join(','),date:kirokuDate});
+  if(document.getElementById('priv-kiroku').checked){
+    await db.from('messages').insert({couple_id:coupleId,from_user:myName,to_user:partnerName,type:'kiroku',content:JSON.stringify({chips,memo}),is_read:false});
+  }
+  closeInputSheet();showToast('記録しました');loadTimeline();loadStats();loadCalendar();
+}
+
 function openPrivacy(){document.getElementById('privacy-modal').classList.add('open');}
 function closePrivacy(){document.getElementById('privacy-modal').classList.remove('open');}
 document.addEventListener('click',function(e){
