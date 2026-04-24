@@ -357,87 +357,13 @@ input[type=date]:focus{border-color:var(--pink);}
 
     <!-- KIMOCHI -->
     <div id="page-kimochi" class="page">
-      <div class="section-title">今日の嬉しいこと・感謝</div>
-      <div class="card">
-        <div class="card-sub" style="margin-bottom:10px">パートナーへの嬉しかったことを届け合う</div>
-        <div class="chip-row">
-          <span class="chip chip-teal" onclick="toggleChip(this)">そばにいてくれた</span>
-          <span class="chip chip-teal" onclick="toggleChip(this)">話を聞いてくれた</span>
-          <span class="chip chip-teal" onclick="toggleChip(this)">ご飯を買ってきてくれた</span>
-          <span class="chip chip-teal" onclick="toggleChip(this)">家事をやってくれた</span>
-          <span class="chip chip-teal" onclick="toggleChip(this)">「お疲れさま」と言ってくれた</span>
-          <span class="chip chip-teal" onclick="toggleChip(this)">少し笑えた</span>
-        </div>
-        <textarea id="happy-memo" placeholder="「あの一言が嬉しかった」「これをしてくれてありがとう」" rows="2"></textarea>
-        <button class="btn btn-teal" onclick="sendHappy()">届ける</button>
+      <div style="text-align:center;padding:40px 20px;">
+        <div style="font-size:14px;color:var(--text-muted);margin-bottom:8px">気持ちを届けるには</div>
+        <div style="font-size:13px;color:var(--text);margin-bottom:20px">ホームの <strong>＋</strong> ボタンを使ってください</div>
+        <button class="btn btn-outline" onclick="showPage('home',document.querySelector('.nav-btn'))">ホームへ戻る</button>
       </div>
-
-      <div class="section-title">身体・気持ちのこと</div>
-      <div class="card">
-        <div class="chip-row">
-          <span class="chip chip-pink" onclick="toggleChip(this)">身体がしんどい</span>
-          <span class="chip chip-pink" onclick="toggleChip(this)">テープが痒い</span>
-          <span class="chip chip-pink" onclick="toggleChip(this)">頭痛がひどい</span>
-          <span class="chip chip-pink" onclick="toggleChip(this)">処置がつらかった</span>
-          <span class="chip chip-pink" onclick="toggleChip(this)">涙が出た</span>
-          <span class="chip chip-pink" onclick="toggleChip(this)">自分を責めてしまった</span>
-          <span class="chip chip-pink" onclick="toggleChip(this)">誰かの妊娠がつらかった</span>
-          <span class="chip chip-pink" onclick="toggleChip(this)">喪失感がある</span>
-          <span class="chip chip-pink" onclick="toggleChip(this)">消えてしまいたかった</span>
-        </div>
-      </div>
-
-      <div class="section-title">心が揺れたこと</div>
-      <div class="card">
-        <div class="card-sub" style="margin-bottom:10px">SNSや妊娠報告でつらかった。おかしくない。</div>
-        <div class="chip-row">
-          <span class="chip chip-purple" onclick="toggleChip(this)">友人の妊娠報告がつらかった</span>
-          <span class="chip chip-purple" onclick="toggleChip(this)">SNSを見てしんどくなった</span>
-          <span class="chip chip-purple" onclick="toggleChip(this)">子どもを見てつらかった</span>
-          <span class="chip chip-purple" onclick="toggleChip(this)">大丈夫って言ったけど本当は違う</span>
-          <span class="chip chip-purple" onclick="toggleChip(this)">笑ってたけどしんどかった</span>
-        </div>
-      </div>
-
-      <div class="section-title">今日の自分へ</div>
-      <div class="card">
-        <div class="card-sub" style="margin-bottom:10px">自分をいたわる小さな記録</div>
-        <div class="chip-row">
-          <span class="chip chip-gray" onclick="toggleChip(this)">お風呂でゆっくりした</span>
-          <span class="chip chip-gray" onclick="toggleChip(this)">好きなものを食べた</span>
-          <span class="chip chip-gray" onclick="toggleChip(this)">散歩した</span>
-          <span class="chip chip-gray" onclick="toggleChip(this)">早く寝た</span>
-          <span class="chip chip-gray" onclick="toggleChip(this)">音楽を聴いた</span>
-        </div>
-      </div>
-
-      <div class="section-title">今の状態</div>
-      <div class="card">
-        <div class="chip-row">
-          <span class="chip chip-gray" onclick="toggleChip(this)">ひとりにしてほしい</span>
-          <span class="chip chip-gray" onclick="toggleChip(this)">そばにいてほしい</span>
-          <span class="chip chip-gray" onclick="toggleChip(this)">話したい</span>
-          <span class="chip chip-teal" onclick="toggleChip(this)">少し落ち着いてる</span>
-          <span class="chip chip-teal" onclick="toggleChip(this)">今日は大丈夫</span>
-        </div>
-      </div>
-
-      <div id="sos-safe" style="display:none">
-        <div class="sos-safe-card">
-          <div class="sos-safe-title">今すぐ話せる場所</div>
-          <a class="sos-safe-link" href="tel:0120-279-338">よりそいホットライン 0120-279-338（24時間）</a>
-          <a class="sos-safe-link" href="tel:0570-783-556">いのちの電話 0570-783-556</a>
-        </div>
-      </div>
-
-
-
-      <textarea id="kimochi-memo" placeholder="言葉にならなくていい。断片でも大丈夫。" rows="3"></textarea>
-      <button class="btn btn-pink" onclick="sendKimochi()">パートナーにそっと届ける</button>
-      <button class="btn btn-outline" onclick="saveKimochiPrivate()">自分だけの記録にする</button>
     </div>
 
-    <!-- PARTNER -->
     <div id="page-partner" class="page">
       <div class="section-title">パートナーから届いている</div>
       <div id="partner-messages"><div class="loader">読み込み中...</div></div>
@@ -616,40 +542,11 @@ input[type=date]:focus{border-color:var(--pink);}
 
     <!-- WARM -->
     <div id="page-warm" class="page">
-      <div class="section-title">あなたのここが好き</div>
-      <div class="card">
-        <div class="chip-row">
-          <span class="chip chip-pink" onclick="toggleChip(this)">いつも話を聞いてくれる</span>
-          <span class="chip chip-pink" onclick="toggleChip(this)">そばにいてくれるだけで安心する</span>
-          <span class="chip chip-pink" onclick="toggleChip(this)">笑わせてくれる</span>
-          <span class="chip chip-pink" onclick="toggleChip(this)">一緒にいて自然でいられる</span>
-          <span class="chip chip-pink" onclick="toggleChip(this)">あなたとなら乗り越えられる</span>
-          <span class="chip chip-pink" onclick="toggleChip(this)">気づかいが細かい</span>
-        </div>
-        <textarea id="warm-memo" placeholder="ひと言だけでも。「あの日○○してくれたこと、ずっと覚えてる」" rows="2"></textarea>
-        <button class="btn btn-pink" onclick="sendWarm()">届ける</button>
-      </div>
-
-      <div class="section-title">傷ついた言葉を記録する</div>
-      <div class="card">
-        <div class="card-sub" style="margin-bottom:10px">外からの言葉をひとりで抱えなくていい。ここに記録してふたりで受け止める。</div>
-        <div class="chip-row">
-          <span class="chip chip-amber" onclick="toggleChip(this)">義母から</span>
-          <span class="chip chip-amber" onclick="toggleChip(this)">義父から</span>
-          <span class="chip chip-amber" onclick="toggleChip(this)">母から</span>
-          <span class="chip chip-amber" onclick="toggleChip(this)">友人から</span>
-          <span class="chip chip-amber" onclick="toggleChip(this)">職場から</span>
-        </div>
-        <textarea id="hurt-memo" placeholder="覚えているまま書いていい。断片でも。" rows="2"></textarea>
-        <div style="background:var(--purple-light);border-radius:10px;padding:12px;margin:8px 0;font-size:12px;color:#4A3A7A;line-height:1.7">その言葉は相手の無知から来ている。でも傷ついた気持ちは本物。それはあなたが真剣に向き合っている証拠。</div>
-        <button class="btn btn-purple" onclick="sendHurt()">パートナーと一緒に受け止める</button>
-      </div>
-
-
-
       <div class="section-title">ふたりの温かい記録</div>
       <div id="warm-list"><div class="loader">読み込み中...</div></div>
     </div>
+
+  </div>
 
   </div>
 
@@ -699,6 +596,14 @@ input[type=date]:focus{border-color:var(--pink);}
       <div class="post-type-item" onclick="openInputSheet('kiroku')">
         <div class="post-type-icon">🏥</div>
         <div class="post-type-label">治療記録</div>
+      </div>
+      <div class="post-type-item" onclick="openInputSheet('warm')">
+        <div class="post-type-icon">💝</div>
+        <div class="post-type-label">ここが好き</div>
+      </div>
+      <div class="post-type-item" onclick="openInputSheet('hurt')">
+        <div class="post-type-icon">🫂</div>
+        <div class="post-type-label">傷ついた言葉</div>
       </div>
       <div class="post-type-item sos-item" onclick="closePostModal();sendSOS()">
         <div class="post-type-icon">📞</div>
@@ -1323,7 +1228,7 @@ function renderCalendar(){
     const ds=calYear+'-'+(String(calMonth+1).padStart(2,'0'))+'-'+(String(d).padStart(2,'0'));
     const recs=calRecords.filter(r=>r.date===ds);
     const visitDot=recs.some(r=>r.record_type==='visit'||(r.record_type==='kiroku'&&r.chips&&r.chips.includes('通院した')))?'<div class="dot dot-teal"></div>':'';
-    const hardDot=recs.some(r=>['kimochi','kimochi_private'].includes(r.record_type)&&r.chips&&(r.chips.includes('しんどい')||r.chips.includes('涙')||r.chips.includes('消えて')||r.chips.includes('喪失')))?'<div class="dot dot-hard"></div>':'';
+    const hardDot=recs.some(r=>['kimochi','kimochi_private'].includes(r.record_type)&&r.chips&&r.chips.length>0)?'<div class="dot dot-hard"></div>':'';
     const dots=visitDot+hardDot;
     html+=`<div class="cal-day ${ds===todayStr?'today':''}">${d}<div class="cal-dot">${dots}</div></div>`;
   }
@@ -1601,6 +1506,32 @@ function openInputSheet(type){
       <textarea id="s-happy-memo" placeholder="「あの一言が嬉しかった」「これをしてくれてありがとう」" rows="3" style="width:100%;border:1px solid var(--border);border-radius:10px;padding:12px;font-size:13px;font-family:var(--sans);background:var(--gray-light);resize:none;outline:none;margin-top:8px"></textarea>
       <button class="btn btn-teal" onclick="submitHappyFromSheet()" style="margin-top:8px">届ける</button>`,
 
+    warm:`<div style="font-size:16px;font-weight:500;margin-bottom:4px">あなたのここが好き</div>
+      <div style="font-size:12px;color:var(--text-muted);margin-bottom:14px">ひと言でいい。「あの日○○してくれたこと、ずっと覚えてる」</div>
+      <div class="chip-row" id="s-warm-chips">
+        <span class="chip chip-pink" onclick="toggleChip(this)">いつも話を聞いてくれる</span>
+        <span class="chip chip-pink" onclick="toggleChip(this)">そばにいてくれるだけで安心する</span>
+        <span class="chip chip-pink" onclick="toggleChip(this)">笑わせてくれる</span>
+        <span class="chip chip-pink" onclick="toggleChip(this)">一緒にいて自然でいられる</span>
+        <span class="chip chip-pink" onclick="toggleChip(this)">あなたとなら乗り越えられる</span>
+        <span class="chip chip-pink" onclick="toggleChip(this)">気づかいが細かい</span>
+      </div>
+      <textarea id="s-warm-memo" placeholder="ひと言だけでも" rows="3" style="width:100%;border:1px solid var(--border);border-radius:10px;padding:12px;font-size:13px;font-family:var(--sans);background:var(--gray-light);resize:none;outline:none;margin-top:8px"></textarea>
+      <button class="btn btn-pink" onclick="submitWarmFromSheet()" style="margin-top:8px">届ける</button>`,
+
+    hurt:`<div style="font-size:16px;font-weight:500;margin-bottom:4px">傷ついた言葉を記録する</div>
+      <div style="font-size:12px;color:var(--text-muted);margin-bottom:14px">外からの言葉をひとりで抱えなくていい。ふたりで受け止める。</div>
+      <div class="chip-row" id="s-hurt-chips">
+        <span class="chip chip-amber" onclick="toggleChip(this)">義母から</span>
+        <span class="chip chip-amber" onclick="toggleChip(this)">義父から</span>
+        <span class="chip chip-amber" onclick="toggleChip(this)">母から</span>
+        <span class="chip chip-amber" onclick="toggleChip(this)">友人から</span>
+        <span class="chip chip-amber" onclick="toggleChip(this)">職場から</span>
+      </div>
+      <div style="background:var(--purple-light);border-radius:10px;padding:12px;margin:10px 0;font-size:12px;color:#4A3A7A;line-height:1.7">その言葉は相手の無知から来ている。でも傷ついた気持ちは本物。それはあなたが真剣に向き合っている証拠。</div>
+      <textarea id="s-hurt-memo" placeholder="覚えているまま書いていい。断片でも。" rows="3" style="width:100%;border:1px solid var(--border);border-radius:10px;padding:12px;font-size:13px;font-family:var(--sans);background:var(--gray-light);resize:none;outline:none;margin-top:8px"></textarea>
+      <button class="btn btn-purple" onclick="submitHurtFromSheet()" style="margin-top:8px">パートナーと一緒に受け止める</button>`,
+
     kiroku:`<div style="font-size:16px;font-weight:500;margin-bottom:4px">治療記録</div>
       <div style="font-size:12px;color:var(--text-muted);margin-bottom:14px">過去の日付も入れられます</div>
       <div style="margin-bottom:10px">
@@ -1670,6 +1601,23 @@ async function submitKirokuFromSheet(){
     await db.from('messages').insert({couple_id:coupleId,from_user:myName,to_user:partnerName,type:'kiroku',content:JSON.stringify({chips,memo}),is_read:false});
   }
   closeInputSheet();showToast('記録しました');loadTimeline();loadStats();loadCalendar();
+}
+async function submitWarmFromSheet(){
+  const chips=Array.from(document.getElementById('input-sheet-content').querySelectorAll('.chip.sel')).map(c=>c.textContent.trim());
+  const memo=document.getElementById('s-warm-memo').value;
+  if(chips.length===0&&!memo){showToast('気持ちを選んでください');return;}
+  await db.from('messages').insert({couple_id:coupleId,from_user:myName,to_user:partnerName,type:'warm',content:JSON.stringify({chips,memo}),is_read:false});
+  await db.from('records').insert({couple_id:coupleId,user_id:myName,record_type:'warm',content:memo||chips[0]||'',chips:chips.join(','),date:today()});
+  closeInputSheet();showToast('届けました');loadWarmList();loadTimelineFeed();
+}
+async function submitHurtFromSheet(){
+  const chips=Array.from(document.getElementById('input-sheet-content').querySelectorAll('.chip.sel')).map(c=>c.textContent.trim());
+  const memo=document.getElementById('s-hurt-memo').value;
+  if(!memo){showToast('言葉を書いてください');return;}
+  const from=chips.find(c=>c.includes('から'))||'';
+  await db.from('messages').insert({couple_id:coupleId,from_user:myName,to_user:partnerName,type:'hurt',content:JSON.stringify({from,memo}),is_read:false});
+  await db.from('records').insert({couple_id:coupleId,user_id:myName,record_type:'hurt',content:memo,chips:from,date:today()});
+  closeInputSheet();showToast('パートナーと一緒に受け止めます');loadWarmList();
 }
 
 function openPrivacy(){document.getElementById('privacy-modal').classList.add('open');}
