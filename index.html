@@ -275,6 +275,8 @@ input[type=date]:focus{border-color:var(--pink);}
 .post-type-icon{font-size:22px;margin-bottom:6px;}
 .post-type-label{font-size:11px;color:var(--text);font-weight:500;}
 .post-type-item.sos-item{background:#FBEDF0;border-color:#E0C0CC;}
+.reply-quote{background:#F5F0EA;border-left:2px solid #C8B8B0;border-radius:0 8px 8px 0;padding:6px 10px;margin-bottom:8px;font-size:11px;color:#9A9090;line-height:1.6;}
+.reply-quote-who{font-size:10px;color:#B0A8A0;margin-bottom:2px;}
 </style>
 </head>
 <body>
@@ -780,8 +782,8 @@ async function loadTimelineFeed(){
   if(error){console.error(error);return;}
   const el=document.getElementById('timeline-feed');
   if(!data||data.length===0){el.innerHTML='<div style="text-align:center;padding:40px 20px;color:var(--text-muted);font-size:13px">まだ記録がありません<br><span style="font-size:11px">＋ボタンから最初の記録を届けてみて</span></div>';return;}
-  const typeLabels={good:'よかったこと',kimochi:'気持ち',warm:'嬉しかったこと',partner:'返事',hurt:'傷ついた言葉',sos:'SOS',meeting:'ふたり会議',recover:'フォロー',i_message:'気持ち'};
-  const typeClass={good:'pt-good',kimochi:'pt-kimochi',warm:'pt-warm',partner:'pt-teal',hurt:'pt-warm',sos:'pt-kimochi'};
+  const typeLabels={good:'よかったこと',kimochi:'気持ち',warm:'嬉しかったこと',partner:'返事',hurt:'傷ついた言葉',sos:'SOS',meeting:'ふたり会議',recover:'フォロー',i_message:'気持ち',gauge:'今日の余裕度'};
+  const typeClass={good:'pt-good',kimochi:'pt-kimochi',warm:'pt-warm',partner:'pt-teal',hurt:'pt-warm',sos:'pt-kimochi',gauge:'pt-good',meeting:'pt-teal',recover:'pt-teal'};
   const replyOpts={
     kimochi:['読んだよ、そばにいる','ゆっくり休んでね','話したいときは聞くよ','黙って隣にいるよ','うまく言えないけど、大切にしてる'],
     good:['よかったね','ありがとう','一緒に喜んでる','もっと聞かせて','そういう話、好きだよ'],
@@ -799,7 +801,20 @@ async function loadTimelineFeed(){
     const opts=replyOpts[m.type]||replyOpts.default;
     const optsHtml=opts.map(o=>`<button class="reply-opt" onclick="selReplyOpt(this)">${o}</button>`).join('');
     const chipsHtml=chips.length>0?`<div class="post-chips-row">${chips.map(c=>`<span class="post-chip pc-pink">${c}</span>`).join('')}</div>`:'';
-    const showReply=!isMe;
+    const showReply=!isMe&&m.type!=='gauge';
+    // 返事の場合、前後のデータから引用元を探す
+    let quoteHtml='';
+    if(m.type==='partner'){
+      // 直前の相手の投稿を引用として表示
+      const prevPosts=data.slice(i+1);
+      const quoted=prevPosts.find(p=>p.from_user!==m.from_user&&p.type!=='partner');
+      if(quoted){
+        let qText=quoted.content,qChips=[];
+        try{const p=JSON.parse(quoted.content);qChips=p.chips||[];qText=p.memo||qChips[0]||'';}catch(e){}
+        const qLabel=typeLabels[quoted.type]||quoted.type;
+        quoteHtml=`<div class="reply-quote"><div class="reply-quote-who">${quoted.from_user}の${qLabel}に返事</div>${qText||qChips.join('、')}</div>`;
+      }
+    }
     return `<div class="post-item" id="post-${m.id}">
       <div class="post-head">
         <div class="post-avatar ${avatarClass}">${initial}</div>
@@ -807,6 +822,7 @@ async function loadTimelineFeed(){
         <div class="post-time">${fmtDate(m.created_at)}</div>
       </div>
       <div class="post-body">
+        ${quoteHtml}
         ${chipsHtml}
         ${text?`<div class="post-text">${text}</div>`:''}
       </div>
@@ -1573,7 +1589,7 @@ async function submitGaugeFromSheet(){
   const sel=document.getElementById('s-gauge-chips').querySelector('.chip.sel');
   if(!sel){showToast('状態を選んでください');return;}
   const label=sel.textContent.trim();
-  await db.from('messages').insert({couple_id:coupleId,from_user:myName,to_user:partnerName,type:'gauge',content:JSON.stringify({chips:[label],memo:'今日の余裕度：'+label}),is_read:false});
+  await db.from('messages').insert({couple_id:coupleId,from_user:myName,to_user:partnerName,type:'gauge',content:JSON.stringify({chips:['余裕度を更新しました'],memo:'今日の余裕度：'+label}),is_read:false});
   await db.from('records').insert({couple_id:coupleId,user_id:myName,record_type:'gauge',content:'今日の余裕度：'+label,chips:label,date:today()});
   closeInputSheet();showToast('届けました');loadTimelineFeed();
 }
