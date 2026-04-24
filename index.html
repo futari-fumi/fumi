@@ -365,66 +365,6 @@ input[type=date]:focus{border-color:var(--pink);}
     </div>
 
     <div id="page-partner" class="page">
-      <div class="section-title">パートナーから届いている</div>
-      <div id="partner-messages"><div class="loader">読み込み中...</div></div>
-
-      <div class="section-title">選ぶだけで返事する</div>
-      <div class="card">
-        <div class="card-sub" style="margin-bottom:10px">文章は要らない。選んで届けるだけ。</div>
-        <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px" id="reply-btns">
-          <button class="reply-btn" onclick="selectReply(this,'読んだよ、そばにいる')">読んだよ、そばにいる</button>
-          <button class="reply-btn" onclick="selectReply(this,'今日もよく頑張ったね')">今日もよく頑張ったね</button>
-          <button class="reply-btn" onclick="selectReply(this,'話したいときは聞くよ')">話したいときは聞くよ</button>
-          <button class="reply-btn" onclick="selectReply(this,'ゆっくり休んでね')">ゆっくり休んでね</button>
-          <button class="reply-btn" onclick="selectReply(this,'ありがとう')">ありがとう</button>
-          <button class="reply-btn" onclick="selectReply(this,'ちゃんと考えてるよ')">ちゃんと考えてるよ</button>
-          <button class="reply-btn" onclick="selectReply(this,'一緒にいるよ')">一緒にいるよ</button>
-          <button class="reply-btn" onclick="selectReply(this,'うまく言えないけど、大切にしてる')">うまく言えないけど、大切にしてる</button>
-        </div>
-        <div class="iMessage-preview" id="reply-preview" style="display:none"></div>
-        <button class="btn btn-teal" id="reply-send-btn" style="display:none" onclick="sendReply()">届ける</button>
-      </div>
-
-      <div class="section-title">失言リカバリー</div>
-      <div class="card">
-        <div class="card-title">さっき言い方が悪かったかも</div>
-        <div class="card-sub" style="margin-bottom:10px">どんな状況でしたか？</div>
-        <div class="chip-row" id="recover-chips">
-          <span class="chip chip-amber" onclick="toggleChip(this)">励ましたつもりが傷つけた</span>
-          <span class="chip chip-amber" onclick="toggleChip(this)">アドバイスして怒らせた</span>
-          <span class="chip chip-amber" onclick="toggleChip(this)">ごめんねで余計こじれた</span>
-          <span class="chip chip-amber" onclick="toggleChip(this)">黙っていたら怒らせた</span>
-        </div>
-        <div id="recover-hint" style="background:var(--amber-light);border-radius:10px;padding:12px;margin:8px 0;font-size:12px;color:#633806;line-height:1.7;display:none"></div>
-        <textarea id="recover-word" placeholder="今夜かける言葉（そのまま使っていい）" rows="2" style="display:none"></textarea>
-        <button class="btn btn-amber" id="recover-btn" style="display:none" onclick="sendRecover()">パートナーに届ける</button>
-      </div>
-
-      <div class="section-title">ふたり会議の準備</div>
-      <div class="card">
-        <div class="card-sub" style="margin-bottom:10px">話し合いの前にテーマとルールを決める</div>
-        <div class="chip-row">
-          <span class="chip chip-purple" onclick="toggleChip(this)">治療の続け方について</span>
-          <span class="chip chip-purple" onclick="toggleChip(this)">お金のこと</span>
-          <span class="chip chip-purple" onclick="toggleChip(this)">仕事と治療の両立</span>
-          <span class="chip chip-purple" onclick="toggleChip(this)">ふたりの関係について</span>
-          <span class="chip chip-purple" onclick="toggleChip(this)">治療の休憩について</span>
-        </div>
-        <div class="meeting-item"><div class="meeting-num">約</div><div class="meeting-text">責めない。途中でやめてもいい。</div></div>
-        <div class="meeting-item"><div class="meeting-num">約</div><div class="meeting-text">「あなたは〇〇だ」ではなく「私は〇〇と感じる」で話す。</div></div>
-        <div class="meeting-item"><div class="meeting-num">約</div><div class="meeting-text">答えを出さなくていい。聞き合うだけでいい。</div></div>
-        <button class="btn btn-purple" onclick="sendMeeting()">「今日、話せそう？」と送る</button>
-      </div>
-
-      <div class="section-title">Iメッセージ変換</div>
-      <div class="card">
-        <div class="card-sub" style="margin-bottom:10px">「あなたは〇〇」を「私は〇〇と感じる」に変換して届ける</div>
-        <textarea id="i-input" placeholder="例：最近全然話を聞いてくれない" rows="2"></textarea>
-        <button class="btn btn-outline" onclick="convertIMessage()" style="margin-bottom:8px">変換する</button>
-        <div id="i-output" style="display:none;background:var(--purple-light);border-radius:10px;padding:12px;font-size:13px;color:var(--purple);line-height:1.7;margin-bottom:8px"></div>
-        <button class="btn btn-purple" id="i-send-btn" style="display:none" onclick="sendIMessage()">この言葉で届ける</button>
-      </div>
-
       <div class="section-title">薬について知る</div>
       <div class="learn-card" onclick="toggleLearn(this)">
         <div class="learn-header"><span class="learn-tag tag-amber-sm">エストラーナテープ（貼り薬）</span><span class="learn-title">子宮内膜を厚くするための女性ホルモン補充</span><span class="learn-arrow">›</span></div>
@@ -442,19 +382,19 @@ input[type=date]:focus{border-color:var(--pink);}
       <div class="section-title">接し方ヒント</div>
       <div class="learn-card" onclick="toggleLearn(this)">
         <div class="learn-header"><span class="learn-tag tag-amber-sm">地雷</span><span class="learn-title">「大丈夫、次があるよ」がなぜ刺さるのか</span><span class="learn-arrow">›</span></div>
-        <div class="learn-body">今この瞬間に悲しんでいる人には「もう次に進め」と聞こえる。解決策ではなく「今しんどい」という共感がほしいだけ。<div class="learn-example">代わりに：「今日はしんどかったね。それだけつらかったんだね。」——それだけでいい。</div></div>
+        <div class="learn-body">あなたが何か言わなきゃと思うのは、助けたいからこそ。でも今パートナーが必要なのは解決ではなく「今しんどい」という受け止めだけ。次があるよ、と言いたくなる気持ちはわかる。でも今夜はその言葉をしまっておいて。<div class="learn-example">「今日はしんどかったね。それだけでよく頑張った。」——答えを出さなくていい。ただ受け止めるだけで十分届く。</div></div>
       </div>
       <div class="learn-card" onclick="toggleLearn(this)">
         <div class="learn-header"><span class="learn-tag tag-amber-sm">地雷</span><span class="learn-title">アドバイスが「他人事」に聞こえる理由</span><span class="learn-arrow">›</span></div>
-        <div class="learn-body">アドバイスをしたくなるのは、あなたが真剣にパートナーのことを考えているから。それはちゃんと伝わっている。ただ、今は解決策より「聞いてもらえた」という感覚が必要な状態にある。口を挟まず最後まで聞ける人が、今一番の支えになれる。<div class="learn-example">「そうか」「つらかったね」「もう少し聞かせて」——この三つだけ覚えておけば十分。答えを出さなくていい。</div></div>
+        <div class="learn-body">「○○したら？」「○○試してみた？」——善意のアドバイスが、なぜか冷たく届くことがある。それは「あなたの痛みより解決策が大事」というメッセージに聞こえるから。まず痛みを受け止めてから、もし必要なら一緒に考える。その順番が大切。<div class="learn-example">「それはしんどかったね」——その一言の後なら、アドバイスも届く。</div></div>
       </div>
       <div class="learn-card" onclick="toggleLearn(this)">
         <div class="learn-header"><span class="learn-tag tag-teal-sm">知識</span><span class="learn-title">ホルモン剤で感情が変わるとはどういうことか</span><span class="learn-arrow">›</span></div>
-        <div class="learn-body">急に泣いたり感情が揺れるのは、あなたへの不満ではない。ホルモン剤が脳の感情調節に直接作用していて、本人も止められない。あなたのせいでも、パートナーのせいでもない。ただそこにある、薬の作用。それを知っているだけで、あなたの接し方は変わる。<div class="learn-example">「なんで泣いてるの？」より「そうか、しんどいね」。理由を聞かなくていい。ただそばにいるだけでいい。</div></div>
+        <div class="learn-body">急に泣いたり感情が揺れるのは、あなたへの不満ではない。ホルモン剤が脳の感情調節に直接作用していて、本人も止められない。あなたのせいでも、パートナーのせいでもない。それを知っているだけで、あなたの接し方は変わる。<div class="learn-example">「なんで泣いてるの？」より「そうか、しんどいね」。理由を聞かなくていい。ただそばにいるだけでいい。</div></div>
       </div>
       <div class="learn-card" onclick="toggleLearn(this)">
         <div class="learn-header"><span class="learn-tag tag-teal-sm">知識</span><span class="learn-title">陰性の判定は「喪失体験」</span><span class="learn-arrow">›</span></div>
-        <div class="learn-body">陰性の判定が出た日、パートナーは「また消えた」という喪失感の中にいる。励ましの言葉は今夜はいらない。次があるよ、も、大丈夫も、今夜は必要ない。あなたがそこにいるだけで、ひとりじゃないと伝わる。それで十分な夜がある。<div class="learn-example">何も言わず隣に座る。「今日はそばにいるよ」とだけ言う。それだけが、今夜の正解。</div></div>
+        <div class="learn-body">陰性の知らせは、単なる「うまくいかなかった」ではない。そこには、想像していた未来が崩れる感覚がある。その喪失は、流産と同じくらいリアルな悲しみであることを知ってほしい。<div class="learn-example">何も言わず隣に座る。「今日はそばにいるよ」とだけ言う。それだけが、今夜の正解。</div></div>
       </div>
       <div class="learn-card" onclick="toggleLearn(this)">
         <div class="learn-header"><span class="learn-tag tag-purple-sm">関係</span><span class="learn-title">「ごめんね」より「ここにいるよ」</span><span class="learn-arrow">›</span></div>
@@ -478,7 +418,6 @@ input[type=date]:focus{border-color:var(--pink);}
       </div>
     </div>
 
-    <!-- KIROKU -->
     <div id="page-kiroku" class="page">
       <div class="section-title">ふたりの歩み</div>
       <div class="stats-grid">
@@ -605,6 +544,18 @@ input[type=date]:focus{border-color:var(--pink);}
         <div class="post-type-icon">🫂</div>
         <div class="post-type-label">傷ついた言葉</div>
       </div>
+      <div class="post-type-item" onclick="openInputSheet('gauge')">
+        <div class="post-type-icon">🌡️</div>
+        <div class="post-type-label">今日の余裕度</div>
+      </div>
+      <div class="post-type-item" onclick="openInputSheet('recover')">
+        <div class="post-type-icon">💬</div>
+        <div class="post-type-label">失言リカバリー</div>
+      </div>
+      <div class="post-type-item" onclick="openInputSheet('meeting')">
+        <div class="post-type-icon">🤝</div>
+        <div class="post-type-label">ふたり会議</div>
+      </div>
       <div class="post-type-item sos-item" onclick="closePostModal();sendSOS()">
         <div class="post-type-icon">📞</div>
         <div class="post-type-label">SOS</div>
@@ -726,8 +677,8 @@ function showMain(){
   document.getElementById('header-user').textContent=myName;
   document.getElementById('partner-gauge-who').textContent=partnerName;
   updateGreeting();
-  loadTimelineFeed();loadPartnerMessages();loadMedicines();loadTimeline();loadWarmList();loadMoneyList();loadCalendar();loadPartnerGauge();loadStats();checkPartnerStatus();loadPastWords();
-  setInterval(loadInbox,15000);
+  loadTimelineFeed();loadMedicines();loadTimeline();loadWarmList();loadMoneyList();loadCalendar();loadPartnerGauge();loadStats();checkPartnerStatus();
+  setInterval(loadTimelineFeed,15000);
   setInterval(checkPartnerStatus,30000);
   setInterval(loadPartnerGauge,30000);
 }
@@ -1532,6 +1483,38 @@ function openInputSheet(type){
       <textarea id="s-hurt-memo" placeholder="覚えているまま書いていい。断片でも。" rows="3" style="width:100%;border:1px solid var(--border);border-radius:10px;padding:12px;font-size:13px;font-family:var(--sans);background:var(--gray-light);resize:none;outline:none;margin-top:8px"></textarea>
       <button class="btn btn-purple" onclick="submitHurtFromSheet()" style="margin-top:8px">パートナーと一緒に受け止める</button>`,
 
+    gauge:`<div style="font-size:16px;font-weight:500;margin-bottom:4px">今日の余裕度</div>
+      <div style="font-size:12px;color:var(--text-muted);margin-bottom:16px">今日の自分の状態をパートナーに伝える</div>
+      <div class="chip-row" id="s-gauge-chips">
+        <span class="chip chip-pink" onclick="selectGauge(this)">限界</span>
+        <span class="chip chip-pink" onclick="selectGauge(this)">しんどい</span>
+        <span class="chip chip-amber" onclick="selectGauge(this)">まあまあ</span>
+        <span class="chip chip-teal" onclick="selectGauge(this)">余裕あり</span>
+        <span class="chip chip-teal" onclick="selectGauge(this)">大丈夫</span>
+      </div>
+      <button class="btn btn-teal" onclick="submitGaugeFromSheet()" style="margin-top:12px">パートナーに伝える</button>`,
+
+    recover:`<div style="font-size:16px;font-weight:500;margin-bottom:4px">失言リカバリー</div>
+      <div style="font-size:12px;color:var(--text-muted);margin-bottom:14px">言ってしまった言葉を、伝え直す</div>
+      <textarea id="s-recover-said" placeholder="言ってしまった言葉：「○○だよ」" rows="2" style="width:100%;border:1px solid var(--border);border-radius:10px;padding:12px;font-size:13px;font-family:var(--sans);background:var(--gray-light);resize:none;outline:none;margin-bottom:8px"></textarea>
+      <div id="s-recover-result" style="display:none;background:var(--teal-light);border-radius:12px;padding:14px;margin-bottom:8px;font-size:13px;color:var(--teal-dark);line-height:1.8"></div>
+      <button class="btn btn-outline" onclick="generateRecover()" id="s-recover-gen-btn">言い換え案を考える</button>
+      <button class="btn btn-teal" onclick="submitRecoverFromSheet()" id="s-recover-send-btn" style="display:none;margin-top:4px">パートナーに届ける</button>`,
+
+    meeting:`<div style="font-size:16px;font-weight:500;margin-bottom:4px">ふたり会議の準備</div>
+      <div style="font-size:12px;color:var(--text-muted);margin-bottom:14px">話し合いたいことを整理してパートナーと共有する</div>
+      <div style="font-size:11px;color:var(--text-muted);margin-bottom:6px">話し合いたいこと</div>
+      <div class="chip-row">
+        <span class="chip chip-teal" onclick="toggleChip(this)">治療の方針</span>
+        <span class="chip chip-teal" onclick="toggleChip(this)">お金のこと</span>
+        <span class="chip chip-teal" onclick="toggleChip(this)">仕事との両立</span>
+        <span class="chip chip-teal" onclick="toggleChip(this)">気持ちのすれ違い</span>
+        <span class="chip chip-teal" onclick="toggleChip(this)">家族への報告</span>
+        <span class="chip chip-teal" onclick="toggleChip(this)">治療のゴール</span>
+      </div>
+      <textarea id="s-meeting-memo" placeholder="伝えたいこと、聞いてほしいこと" rows="3" style="width:100%;border:1px solid var(--border);border-radius:10px;padding:12px;font-size:13px;font-family:var(--sans);background:var(--gray-light);resize:none;outline:none;margin-top:8px"></textarea>
+      <button class="btn btn-teal" onclick="submitMeetingFromSheet()" style="margin-top:8px">パートナーに共有する</button>`,
+
     kiroku:`<div style="font-size:16px;font-weight:500;margin-bottom:4px">治療記録</div>
       <div style="font-size:12px;color:var(--text-muted);margin-bottom:14px">過去の日付も入れられます</div>
       <div style="margin-bottom:10px">
@@ -1609,6 +1592,45 @@ async function submitWarmFromSheet(){
   await db.from('messages').insert({couple_id:coupleId,from_user:myName,to_user:partnerName,type:'warm',content:JSON.stringify({chips,memo}),is_read:false});
   await db.from('records').insert({couple_id:coupleId,user_id:myName,record_type:'warm',content:memo||chips[0]||'',chips:chips.join(','),date:today()});
   closeInputSheet();showToast('届けました');loadWarmList();loadTimelineFeed();
+}
+function selectGauge(el){
+  document.getElementById('s-gauge-chips').querySelectorAll('.chip').forEach(c=>c.classList.remove('sel'));
+  el.classList.add('sel');
+}
+async function submitGaugeFromSheet(){
+  const sel=document.getElementById('s-gauge-chips').querySelector('.chip.sel');
+  if(!sel){showToast('状態を選んでください');return;}
+  const label=sel.textContent.trim();
+  await db.from('messages').insert({couple_id:coupleId,from_user:myName,to_user:partnerName,type:'gauge',content:JSON.stringify({chips:[label],memo:'今日の余裕度：'+label}),is_read:false});
+  await db.from('records').insert({couple_id:coupleId,user_id:myName,record_type:'gauge',content:'今日の余裕度：'+label,chips:label,date:today()});
+  closeInputSheet();showToast('届けました');loadTimelineFeed();
+}
+async function generateRecover(){
+  const said=document.getElementById('s-recover-said').value.trim();
+  if(!said){showToast('言ってしまった言葉を入力してください');return;}
+  document.getElementById('s-recover-gen-btn').textContent='考え中...';
+  const res=await db.from('messages').select('content').eq('couple_id',coupleId).eq('type','kimochi').order('created_at',{ascending:false}).limit(3);
+  const recent=res.data?.map(m=>{try{return JSON.parse(m.content).chips?.join('、');}catch(e){return '';}}).filter(Boolean).join('、')||'しんどい気持ち';
+  const suggestion=`「${said}」という言葉で傷つけてしまったかもしれない。
+本当は、あなたのことが心配だった。一緒に考えたい。
+今のあなたに寄り添いたい。`;
+  document.getElementById('s-recover-result').style.display='block';
+  document.getElementById('s-recover-result').textContent=suggestion;
+  document.getElementById('s-recover-gen-btn').textContent='もう一度考える';
+  document.getElementById('s-recover-send-btn').style.display='block';
+}
+async function submitRecoverFromSheet(){
+  const text=document.getElementById('s-recover-result').textContent;
+  if(!text)return;
+  await db.from('messages').insert({couple_id:coupleId,from_user:myName,to_user:partnerName,type:'recover',content:JSON.stringify({memo:text}),is_read:false});
+  closeInputSheet();showToast('届けました');loadTimelineFeed();
+}
+async function submitMeetingFromSheet(){
+  const chips=Array.from(document.getElementById('input-sheet-content').querySelectorAll('.chip.sel')).map(c=>c.textContent.trim());
+  const memo=document.getElementById('s-meeting-memo').value;
+  if(chips.length===0&&!memo){showToast('話し合いたいことを選んでください');return;}
+  await db.from('messages').insert({couple_id:coupleId,from_user:myName,to_user:partnerName,type:'meeting',content:JSON.stringify({chips,memo}),is_read:false});
+  closeInputSheet();showToast('パートナーに共有しました');loadTimelineFeed();
 }
 async function submitHurtFromSheet(){
   const chips=Array.from(document.getElementById('input-sheet-content').querySelectorAll('.chip.sel')).map(c=>c.textContent.trim());
