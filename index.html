@@ -1158,7 +1158,7 @@ let calRecords=[];
 async function loadCalendar(){
   const start=new Date(calYear,calMonth,1).toISOString().split('T')[0];
   const end=new Date(calYear,calMonth+1,0).toISOString().split('T')[0];
-  const{data}=await db.from('records').select('date,record_type').eq('couple_id',coupleId).gte('date',start).lte('date',end);
+  const{data}=await db.from('records').select('date,record_type,chips').eq('couple_id',coupleId).gte('date',start).lte('date',end);
   calRecords=data||[];
   renderCalendar();
 }
@@ -1176,7 +1176,12 @@ function renderCalendar(){
     const ds=calYear+'-'+(String(calMonth+1).padStart(2,'0'))+'-'+(String(d).padStart(2,'0'));
     const recs=calRecords.filter(r=>r.date===ds);
     const visitDot=recs.some(r=>r.record_type==='visit'||(r.record_type==='kiroku'&&r.chips&&r.chips.includes('通院した')))?'<div class="dot dot-teal"></div>':'';
-    const hardDot=recs.some(r=>['kimochi','kimochi_private'].includes(r.record_type)&&r.chips&&r.chips.length>0)?'<div class="dot dot-hard"></div>':'';
+    const hardChips=['身体がしんどい','テープが痒い','頭痛がひどい','処置がつらかった','涙が出た','自分を責めてしまった','誰かの妊娠がつらかった','喪失感がある','消えてしまいたかった','ひとりにしてほしい'];
+    const hardDot=recs.some(r=>{
+      if(['kimochi','kimochi_private'].includes(r.record_type)&&r.chips&&hardChips.some(c=>r.chips.includes(c)))return true;
+      if(r.record_type==='visit'&&r.chips&&(r.chips.includes('身体がしんどかった')||r.chips.includes('陰性だった')))return true;
+      return false;
+    })?'<div class="dot dot-hard"></div>':'';
     const dots=visitDot+hardDot;
     html+=`<div class="cal-day ${ds===todayStr?'today':''}">${d}<div class="cal-dot">${dots}</div></div>`;
   }
