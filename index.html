@@ -796,18 +796,26 @@ async function loadTimelineFeed(){
     const isMe=m.from_user===myName;
     const avatarClass=isMe?'av-me':'av-partner';
     const initial=m.from_user?m.from_user[0]:'?';
-    const typeLabel=typeLabels[m.type]||m.type;
-    const typeCls=typeClass[m.type]||'pt-good';
-    const opts=replyOpts[m.type]||replyOpts.default;
+    // gaugeはchipsに「余裕度を更新しました」が入っているので判定
+    const isGauge=m.type==='gauge'||(m.type==='partner'&&chips.includes('余裕度を更新しました'));
+    const actualType=isGauge?'gauge':m.type;
+    const typeLabel=typeLabels[actualType]||actualType;
+    const typeCls=typeClass[actualType]||'pt-good';
+    const opts=replyOpts[actualType]||replyOpts.default;
     const optsHtml=opts.map(o=>`<button class="reply-opt" onclick="selReplyOpt(this)">${o}</button>`).join('');
-    const chipsHtml=chips.length>0?`<div class="post-chips-row">${chips.map(c=>`<span class="post-chip pc-pink">${c}</span>`).join('')}</div>`:'';
-    const showReply=!isMe&&m.type!=='gauge';
+    const chipsHtml=chips.filter(c=>c!=='余裕度を更新しました').length>0?`<div class="post-chips-row">${chips.filter(c=>c!=='余裕度を更新しました').map(c=>`<span class="post-chip pc-pink">${c}</span>`).join('')}</div>`:'';
+    const showReply=!isMe&&!isGauge;
     // 返事（partner type）のみ引用を表示
     let quoteHtml='';
-    if(m.type==='partner'){
+    if(m.type==='partner'&&!isGauge){
       // タイムライン上で直前の「相手の」「返事以外」の投稿を引用
       const prevPosts=data.slice(i+1);
-      const quoted=prevPosts.find(p=>p.from_user!==m.from_user&&p.type!=='partner'&&p.type!=='gauge');
+      let qChipsCheck=[];
+      try{qChipsCheck=JSON.parse(m.content)?.chips||[];}catch(e){}
+      const quoted=prevPosts.find(p=>{
+        let pc=[];try{pc=JSON.parse(p.content)?.chips||[];}catch(e){}
+        return p.from_user!==m.from_user&&p.type!=='partner'&&p.type!=='gauge'&&!pc.includes('余裕度を更新しました');
+      });
       if(quoted){
         let qText=quoted.content,qChips=[];
         try{const p=JSON.parse(quoted.content);qChips=p.chips||[];qText=p.memo||qChips[0]||'';}catch(e){}
