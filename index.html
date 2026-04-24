@@ -326,36 +326,8 @@ input[type=date]:focus{border-color:var(--pink);}
 
     <!-- HOME -->
     <div id="page-home" class="page active">
-      <div class="section-title">受け取ったメッセージ</div>
-      <div id="inbox-list"><div class="loader">読み込み中...</div></div>
-      <div class="section-title">今日のよかった探し</div>
-      <div class="card">
-        <div class="good-question">
-          <div class="good-q-text">今日、ひとつだけよかったことは？</div>
-          <div class="good-q-sub">どんな小さなことでも大丈夫</div>
-        </div>
-        <div class="chip-row" id="good-chips">
-          <span class="chip chip-teal" onclick="toggleChip(this)">少し笑えた</span>
-          <span class="chip chip-teal" onclick="toggleChip(this)">おいしいものを食べた</span>
-          <span class="chip chip-teal" onclick="toggleChip(this)">よく眠れた</span>
-          <span class="chip chip-teal" onclick="toggleChip(this)">好きな音楽を聴いた</span>
-          <span class="chip chip-teal" onclick="toggleChip(this)">ゆっくりできた</span>
-          <span class="chip chip-teal" onclick="toggleChip(this)">パートナーと話せた</span>
-        </div>
-        <textarea id="good-memo" placeholder="ひと言でいい。「コーヒーがおいしかった」でも十分。" rows="2"></textarea>
-        <button class="btn btn-teal" onclick="sendGood()">パートナーと共有する</button>
-      </div>
-      <div id="good-history"></div>
-      <div class="sos-strip" onclick="sendSOS()">
-        <div class="sos-ic">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#9A7888" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 11.5 19.79 19.79 0 01.22 2.82 2 2 0 012.22.82h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 8.83a16 16 0 006.08 6.08l1.58-1.58a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
-        </div>
-        <div style="flex:1"><div class="sos-strip-t">SOS を送る</div><div class="sos-strip-s">タップだけで今すぐ届く</div></div>
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#C8B8B8" stroke-width="1.5" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
-      </div>
+      <div id="timeline-feed"><div class="loader">読み込み中...</div></div>
     </div>
-
-    <!-- KIMOCHI -->
     <div id="page-kimochi" class="page">
       <div style="text-align:center;padding:40px 20px;">
         <div style="font-size:14px;color:var(--text-muted);margin-bottom:8px">気持ちを届けるには</div>
@@ -940,7 +912,7 @@ const recoverData={
   'ごめんねで余計こじれた':{hint:'「ごめん」は会話を閉じる言葉になりやすい。「聞きたい」に変えると開く。',word:'さっきは謝るだけで終わらせてしまった。あなたの気持ちをちゃんと聞きたい。'},
   '黙っていたら怒らせた':{hint:'沈黙の理由を一言説明するだけで「無関心」という誤解が解けることが多い。',word:'さっき何も言えなかった。無視していたわけじゃない。どう言えばいいかわからなかっただけで、ちゃんとここにいるよ。'}
 };
-document.getElementById('recover-chips').addEventListener('click',e=>{
+document.getElementById('recover-chips')?.addEventListener('click',e=>{
   if(!e.target.classList.contains('chip'))return;
   setTimeout(()=>{
     const sel=document.getElementById('recover-chips').querySelector('.chip.sel');
