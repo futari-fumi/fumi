@@ -313,10 +313,7 @@ input[type=date]:focus{border-color:var(--pink);}
     </div>
     <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;margin-top:4px">
       <div style="font-size:11px;color:var(--hero-text);font-weight:400;letter-spacing:.04em" id="header-user"></div>
-      <div class="partner-status">
-        <div class="status-dot" id="status-dot"></div>
-        <span id="status-text" style="font-size:10px;color:#8AB4A8"></span>
-      </div>
+
       <button onclick="openPrivacy()" style="margin-top:4px;background:rgba(255,255,255,.5);border:1px solid rgba(160,130,130,.2);border-radius:8px;padding:4px 8px;display:flex;align-items:center;gap:4px;cursor:pointer;">
         <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#A08383" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93l-1.41 1.41M6.34 17.66l-1.41 1.41M20 12h-2M6 12H4M17.66 17.66l-1.41-1.41M7.76 7.76L6.34 6.34"/></svg>
         <span style="font-size:9px;color:#A08383;letter-spacing:.04em">設定</span>
@@ -474,11 +471,11 @@ input[type=date]:focus{border-color:var(--pink);}
     </button>
     <button class="nav-btn" onclick="showPage('partner',this)">
       <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="#C0B8B0" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
-      <span class="nav-label">ふたり</span>
+      <span class="nav-label">知る</span>
     </button>
     <button class="nav-btn" onclick="showPage('warm',this)">
       <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="#C0B8B0" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-      <span class="nav-label">温かく</span>
+      <span class="nav-label">温かい記録</span>
     </button>
   </nav>
 </div>
@@ -664,7 +661,8 @@ function updateGreeting(){
   if(el)el.textContent=g+'、'+myName+'さん';
 }
 
-async function checkPartnerStatus(){
+async function checkPartnerStatus(){return;
+
   const since=new Date(Date.now()-10*60*1000).toISOString();
   const{data}=await db.from('records').select('created_at').eq('couple_id',coupleId).eq('user_id',partnerName).gte('created_at',since).limit(1);
   const online=data&&data.length>0;
