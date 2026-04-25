@@ -398,27 +398,6 @@ input[type=date]:focus{border-color:var(--pink);}
         <div class="stat-card"><div class="stat-num" id="stat-subsidy">-</div><div class="stat-label">助成金（円）</div></div>
       </div>
 
-      <div class="section-title">余裕度ゲージ</div>
-      <div class="card">
-        <div style="margin-bottom:12px">
-          <div style="display:flex;justify-content:space-between;margin-bottom:4px"><span style="font-size:12px;font-weight:500">わたし</span><span style="font-size:11px;color:var(--text-muted)" id="my-gauge-label">選んでください</span></div>
-          <div class="gauge-bar"><div class="gauge-fill fill-pink" id="my-gauge-fill" style="width:0%"></div></div>
-          <div class="gauge-steps">
-            <div class="gauge-step" onclick="setGauge('my',0,this)">限界</div>
-            <div class="gauge-step" onclick="setGauge('my',1,this)">しんどい</div>
-            <div class="gauge-step" onclick="setGauge('my',2,this)">まあまあ</div>
-            <div class="gauge-step" onclick="setGauge('my',3,this)">余裕あり</div>
-            <div class="gauge-step" onclick="setGauge('my',4,this)">大丈夫</div>
-          </div>
-        </div>
-        <div>
-          <div style="display:flex;justify-content:space-between;margin-bottom:4px"><span style="font-size:12px;font-weight:500" id="partner-gauge-who">パートナー</span><span style="font-size:11px;color:var(--text-muted)" id="partner-gauge-label">読み込み中...</span></div>
-          <div class="gauge-bar"><div class="gauge-fill fill-teal" id="partner-gauge-fill" style="width:0%"></div></div>
-        </div>
-        <div id="gauge-hint" style="background:var(--teal-light);border-radius:10px;padding:10px;margin-top:10px;font-size:12px;color:var(--teal-dark);line-height:1.7;display:none"></div>
-        <button class="btn btn-teal" onclick="saveGauge()" style="margin-top:8px">記録してパートナーに届ける</button>
-      </div>
-
       <div class="section-title">通院カレンダー</div>
       <div class="card" id="cal-wrap">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
