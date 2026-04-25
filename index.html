@@ -627,10 +627,9 @@ function showMain(){
   document.getElementById('header-user').textContent=myName;
   document.getElementById('partner-gauge-who').textContent=partnerName;
   updateGreeting();
-  loadTimelineFeed();loadMedicines();loadTimeline();loadWarmList();loadMoneyList();loadCalendar();loadPartnerGauge();loadStats();checkPartnerStatus();
+  // 最初はホームのみ読み込み、他は遅延ロード
+  loadTimelineFeed();
   setInterval(loadTimelineFeed,15000);
-  setInterval(checkPartnerStatus,30000);
-  setInterval(loadPartnerGauge,30000);
 }
 
 function updateGreeting(){
@@ -661,8 +660,7 @@ function showPage(name,btn){
   const activeSvg=btn.querySelector('svg');
   if(activeSvg)activeSvg.setAttribute('stroke','#B07070');
   if(name==='home'){loadTimelineFeed();}
-  if(name==='kiroku'){loadMedicines();loadTimeline();loadCalendar();loadMoneyList();loadPartnerGauge();loadStats();}
-  if(name==='partner'){loadPartnerMessages();}
+  if(name==='kiroku'){loadMedicines();loadTimeline();loadCalendar();loadMoneyList();loadStats();}
   if(name==='warm'){loadWarmList();}
   const fab=document.getElementById('fab-btn');
   if(fab)fab.style.display='flex';
